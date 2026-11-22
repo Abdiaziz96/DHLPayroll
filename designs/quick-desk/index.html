@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Quick Desk: payroll answers</title>
+<style>
+  :root {
+    --red: #d42b1e;
+    --red-dark: #ac1f15;
+    --red-wash: #fdefed;
+    --ink: #14171b;
+    --ink-2: #545b64;
+    --ink-3: #868d96;
+    --line: #e2e5e9;
+    --line-2: #eef0f3;
+    --bg: #f7f8f9;
+    --white: #ffffff;
+    --radius: 6px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 15px/1.5 var(--font);
+    -webkit-font-smoothing: antialiased;
+    overflow-wrap: break-word;
+  }
+
+  .is-hidden { display: none !important; }
+
+  .sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  :focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+
+  /* Top strip ---------------------------------------------------- */
+
+  .strip { position: sticky; top: 0; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
+
+  .strip-in {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .brand { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; }
+
+  .mark { width: 9px; height: 9px; background: var(--red); flex: 0 0 auto; }
+
+  /* Column ------------------------------------------------------- */
+
+  .wrap { max-width: 720px; margin: 0 auto; padding: 40px 20px 48px; }
+
+  h1 { margin: 0 0 8px; font-size: 26px; line-height: 1.2; font-weight: 600; letter-spacing: -0.01em; }
+
+  .lede { margin: 0 0 22px; color: var(--ink-2); font-size: 15px; max-width: 52ch; }
+
+  /* Field -------------------------------------------------------- */
+
+  .field {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    transition: border-color .12s ease, box-shadow .12s ease;
+  }
+
+  .field:focus-within { border-color: var(--red); box-shadow: 0 0 0 3px var(--red-wash); }
+
+  .field input,
+  .field textarea { display: block; width: 100%; border: 0; background: transparent; color: var(--ink); font: inherit; padding: 0 16px; }
+
+  .field input { height: 60px; font-size: 16px; }
+
+  .field textarea { height: 100px; padding: 15px 16px; font-size: 16px; line-height: 1.45; resize: vertical; }
+
+  .field input:focus,
+  .field textarea:focus { outline: none; }
+
+  .field input::placeholder,
+  .field textarea::placeholder { color: var(--ink-3); }
+
+  /* Segmented control -------------------------------------------- */
+
+  .seg-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; min-height: 32px; }
+
+  .seg {
+    display: inline-flex;
+    gap: 2px;
+    padding: 2px;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+
+  .seg-btn {
+    border: 0;
+    background: transparent;
+    color: var(--ink-2);
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .seg-btn:hover { color: var(--ink); }
+
+  .seg-btn[aria-pressed="true"] { background: var(--ink); color: var(--white); }
+
+  .btn-text {
+    background: none;
+    border: 0;
+    padding: 2px 0;
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--ink-2);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--line);
+  }
+
+  .btn-text:hover { color: var(--red); text-decoration-color: var(--red); }
+
+  .btn-ghost {
+    background: var(--white);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 6px 11px;
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .btn-ghost:hover { border-color: var(--ink-3); }
+
+  .btn-primary {
+    background: var(--red);
+    color: var(--white);
+    border: 1px solid var(--red);
+    border-radius: var(--radius);
+    padding: 9px 16px;
+    font: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .btn-primary:hover { background: var(--red-dark); border-color: var(--red-dark); }
+
+  /* Answers list ------------------------------------------------- */
+
+  .meta-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 22px 0 6px; min-height: 18px; }
+
+  .count { margin: 0; font-size: 11.5px; color: var(--ink-3); }
+
+  .faq { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+
+  .row { border-bottom: 1px solid var(--line); }
+
+  .row-top { display: flex; align-items: center; gap: 10px; }
+
+  .row-h { flex: 1 1 auto; min-width: 0; margin: 0; font-size: inherit; font-weight: inherit; }
+
+  .row-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 0;
+    background: none;
+    border: 0;
+    font: inherit;
+    font-size: 14.5px;
+    font-weight: 500;
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .row-q { flex: 1 1 auto; min-width: 0; }
+
+  .ind { position: relative; flex: 0 0 auto; width: 12px; height: 12px; }
+
+  .ind::before,
+  .ind::after { content: ""; position: absolute; background: var(--ink-3); transition: transform .15s ease, background-color .15s ease; }
+
+  .ind::before { top: 5.25px; left: 0; width: 12px; height: 1.5px; }
+
+  .ind::after { top: 0; left: 5.25px; width: 1.5px; height: 12px; }
+
+  .row-head:hover .ind::before,
+  .row-head:hover .ind::after { background: var(--red); }
+
+  .row-head[aria-expanded="true"] .ind::after { transform: scaleY(0); }
+  .row-head[aria-expanded="true"] .ind::before { background: var(--red); }
+
+  .chip {
+    flex: 0 0 auto;
+    min-width: 68px;
+    text-align: center;
+    padding: 2px 7px;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font: inherit;
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--ink-2);
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .chip:hover { border-color: var(--ink-3); color: var(--ink); }
+
+  .chip[aria-pressed="true"] { background: var(--red-wash); border-color: var(--red); color: var(--red-dark); }
+
+  .row-body { padding: 0 0 14px 78px; }
+
+  .row-a { margin: 0; max-width: 68ch; font-size: 14px; color: var(--ink-2); }
+
+  .note { margin: 16px 0 0; max-width: 62ch; font-size: 11.5px; color: var(--ink-3); }
+
+  /* Empty state -------------------------------------------------- */
+
+  .empty { border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); padding: 22px 20px; margin-top: 14px; }
+
+  .empty-h { margin: 0 0 6px; font-size: 15px; font-weight: 600; }
+
+  .empty-p { margin: 0 0 16px; font-size: 13.5px; color: var(--ink-2); max-width: 56ch; }
+
+  /* Ask pane ----------------------------------------------------- */
+
+  .ask-block { margin-top: 18px; }
+
+  .vis-fieldset { margin: 0 0 14px; padding: 0; border: 0; }
+
+  .vis-legend { display: block; margin-bottom: 7px; padding: 0; font-size: 11.5px; color: var(--ink-3); }
+
+  .vis-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .vis-opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    flex: 1 1 250px;
+    max-width: 330px;
+    padding: 9px 11px;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    cursor: pointer;
+  }
+
+  .vis-opt.is-on { border-color: var(--ink); }
+
+  .vis-opt input { margin: 2px 0 0; accent-color: var(--red); flex: 0 0 auto; }
+
+  .vis-opt b { display: block; font-size: 12.5px; font-weight: 600; }
+
+  .vis-opt span { display: block; font-size: 11.5px; color: var(--ink-3); line-height: 1.4; }
+
+  .ask-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+  .hint { font-size: 11.5px; color: var(--ink-3); }
+
+  .confirm {
+    margin: 16px 0 0;
+    padding: 10px 14px;
+    background: var(--red-wash);
+    border-left: 2px solid var(--red);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: 13.5px;
+  }
+
+  .err { margin: 8px 0 0; font-size: 12.5px; color: var(--red-dark); }
+
+  /* Footer ------------------------------------------------------- */
+
+  .foot { max-width: 720px; margin: 0 auto; padding: 0 20px 40px; font-size: 12px; color: var(--ink-3); }
+
+  .foot-line { margin: 0; padding-top: 14px; border-top: 1px solid var(--line); }
+
+  /* Admin overlay ------------------------------------------------ */
+
+  .scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    background: rgba(20, 23, 27, .42);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .2s ease, visibility .2s ease;
+  }
+
+  .scrim.is-open { opacity: 1; visibility: visible; }
+
+  .admin {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 30;
+    width: min(940px, 100%);
+    display: flex;
+    flex-direction: column;
+    background: var(--white);
+    border-left: 1px solid var(--line);
+    transform: translateX(100%);
+    visibility: hidden;
+    transition: transform .22s ease, visibility .22s ease;
+  }
+
+  .admin.is-open { transform: none; visibility: visible; }
+
+  .admin-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .admin-title { margin: 0; font-size: 18px; font-weight: 600; }
+
+  .admin-sub { margin: 4px 0 0; font-size: 12px; color: var(--ink-3); }
+
+  .admin-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 20px; }
+
+  .sec { margin-bottom: 28px; }
+
+  .sec-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+
+  .sec-title { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 13px; font-weight: 600; }
+
+  .pill {
+    padding: 0 6px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--ink-2);
+    line-height: 16px;
+  }
+
+  .queue { list-style: none; margin: 0; padding: 0; }
+
+  .q-item { padding: 12px; margin-bottom: 8px; border: 1px solid var(--line); border-radius: var(--radius); }
+
+  .q-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+
+  .q-text { margin: 0; font-size: 13.5px; font-weight: 500; }
+
+  .tag {
+    flex: 0 0 auto;
+    padding: 1px 6px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--ink-2);
+  }
+
+  .tag-priv { background: var(--red-wash); border-color: var(--red); color: var(--red-dark); }
+
+  .q-meta { margin: 6px 0 10px; font-size: 11px; color: var(--ink-3); }
+
+  .q-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  .inp,
+  .ta {
+    display: block;
+    width: 100%;
+    padding: 7px 9px;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font: inherit;
+    font-size: 13px;
+    color: var(--ink);
+  }
+
+  .inp:focus,
+  .ta:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px var(--red-wash); }
+
+  .ta { line-height: 1.45; resize: vertical; }
+
+  .mt { margin-top: 8px; }
+
+  .cell-label { display: block; margin: 0 0 3px; font-size: 10.5px; font-weight: 600; color: var(--ink-3); }
+
+  .tbl-wrap { margin-top: 4px; }
+
+  .tbl { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 13px; }
+
+  .tbl th {
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-3);
+  }
+
+  .tbl td { padding: 9px 8px; border-bottom: 1px solid var(--line-2); vertical-align: top; }
+
+  .tbl-q { margin: 0; }
+
+  .tbl-act { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  .tbl-confirm { font-size: 12.5px; }
+
+  /* Narrow screens ---------------------------------------------- */
+
+  @media (max-width: 640px) {
+    .tbl { table-layout: auto; }
+    .tbl,
+    .tbl tbody,
+    .tbl tr,
+    .tbl td { display: block; width: 100%; }
+    .tbl thead { display: none; }
+    .tbl tr { padding: 10px 0; border-bottom: 1px solid var(--line); }
+    .tbl td { padding: 3px 0; border: 0; }
+    .tbl td::before { content: attr(data-label); display: block; margin-bottom: 2px; font-size: 10.5px; font-weight: 600; color: var(--ink-3); }
+    .tbl td:first-child::before { display: none; }
+    .tbl-act { display: flex; padding-top: 6px; }
+  }
+
+  @media (max-width: 480px) {
+    .strip-in { padding: 0 14px; }
+    .wrap { padding: 28px 14px 40px; }
+    .foot { padding: 0 14px 32px; }
+    h1 { font-size: 22px; }
+    .row-body { padding-left: 0; }
+    .chip { min-width: 62px; font-size: 10px; }
+    .admin-head,
+    .admin-body { padding-left: 14px; padding-right: 14px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="strip">
+  <div class="strip-in">
+    <span class="brand"><span class="mark" aria-hidden="true"></span>Quick Desk</span>
+    <button type="button" class="btn-text" id="adminOpen">Admin</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <h1>Payroll answers, fast.</h1>
+  <p class="lede">Type your question. If it is a common one, the answer is already here.</p>
+
+  <div class="field">
+    <label class="sr" for="searchInput">Search payroll answers</label>
+    <input id="searchInput" type="text" autocomplete="off" placeholder="Search answers, for example: payslip, overtime, cut-off">
+    <label class="sr" for="askInput">Your payroll question</label>
+    <textarea id="askInput" class="is-hidden" rows="3" placeholder="Type your question for Emma"></textarea>
+  </div>
+
+  <div class="seg-row">
+    <div class="seg" role="group" aria-label="Choose a mode">
+      <button type="button" class="seg-btn" data-mode="answers" aria-pressed="true">Answers</button>
+      <button type="button" class="seg-btn" data-mode="ask" aria-pressed="false">Ask Emma</button>
+    </div>
+    <button type="button" class="btn-text is-hidden" id="clearBtn">Clear filters</button>
+  </div>
+
+  <section id="answersPane" aria-labelledby="answersTitle">
+    <h2 class="sr" id="answersTitle">Frequently asked questions</h2>
+    <div class="meta-row">
+      <p class="count" id="count" role="status" aria-live="polite"></p>
+    </div>
+    <ul class="faq" id="faqList"></ul>
+    <div class="empty is-hidden" id="emptyState">
+      <p class="empty-h" id="emptyHead">No answer matches that yet.</p>
+      <p class="empty-p">Emma can answer it for you. Public questions and answers can be added to this list so nobody has to ask twice.</p>
+      <button type="button" class="btn-primary" id="emptyAsk">Ask Emma this instead</button>
+    </div>
+    <p class="note">Dates, cut-off times and rates on this page are example figures for a mockup. Emma confirms anything specific to your pay.</p>
+  </section>
+
+  <section id="askPane" class="is-hidden" aria-labelledby="askTitle">
+    <h2 class="sr" id="askTitle">Ask Emma</h2>
+    <div class="ask-block">
+      <fieldset class="vis-fieldset">
+        <legend class="vis-legend">Who can see this question?</legend>
+        <div class="vis-opts">
+          <label class="vis-opt" id="visPublicOpt">
+            <input type="radio" name="vis" value="public" checked>
+            <span>
+              <b>Public</b>
+              <span>Emma can add the question and the answer to this list so everyone sees it.</span>
+            </span>
+          </label>
+          <label class="vis-opt" id="visPrivateOpt">
+            <input type="radio" name="vis" value="private">
+            <span>
+              <b>Private</b>
+              <span>Only Emma sees it. Nothing is added to the public list.</span>
+            </span>
+          </label>
+        </div>
+      </fieldset>
+
+      <div class="ask-actions">
+        <button type="button" class="btn-primary" id="sendBtn">Send to Emma</button>
+        <span class="hint">Ctrl and Enter also sends.</span>
+      </div>
+
+      <p class="err is-hidden" id="askErr">Type your question first.</p>
+      <p class="confirm is-hidden" id="askConfirm" role="status"></p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <p class="foot-line">Quick Desk is an internal mockup. These are general answers, and Emma confirms anything specific to your pay.</p>
+</footer>
+
+<div class="scrim" id="scrim"></div>
+
+<aside class="admin" id="adminPanel" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+  <div class="admin-head">
+    <div>
+      <h2 class="admin-title" id="adminTitle">Admin</h2>
+      <p class="admin-sub">Queue and answers. Held in this page only, nothing is sent anywhere.</p>
+    </div>
+    <button type="button" class="btn-ghost" id="adminClose">Close</button>
+  </div>
+
+  <div class="admin-body">
+    <section class="sec" aria-labelledby="queueTitle">
+      <div class="sec-head">
+        <h3 class="sec-title" id="queueTitle">Pending questions <span class="pill" id="queueCount">0</span></h3>
+      </div>
+      <ul class="queue" id="queueList"></ul>
+      <p class="note is-hidden" id="queueEmpty">Nothing waiting. Questions sent from the Ask Emma form land here.</p>
+    </section>
+
+    <section class="sec" aria-labelledby="faqTitle">
+      <div class="sec-head">
+        <h3 class="sec-title" id="faqTitle">FAQ entries <span class="pill" id="faqCount">0</span></h3>
+        <button type="button" class="btn-ghost" id="addFaq">Add FAQ row</button>
+      </div>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <caption class="sr">All FAQ entries, including drafts</caption>
+          <colgroup>
+            <col style="width:46%">
+            <col style="width:16%">
+            <col style="width:14%">
+            <col style="width:24%">
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col">Question</th>
+              <th scope="col">Category</th>
+              <th scope="col">State</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="faqRows"></tbody>
+        </table>
+      </div>
+      <datalist id="catList"></datalist>
+    </section>
+  </div>
+</aside>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ------------------------------------------------------------------
+     Data. Everything lives in memory so the file opens from file://
+     with no network. See persist() for where storage would go.
+  ------------------------------------------------------------------ */
+
+  const seedFaqs = [
+    { id: 1, q: "When do I get paid each month?", cat: "Pay dates", published: true,
+      a: "Salaries are normally paid on the 25th. If the 25th falls on a weekend or a bank holiday, pay usually arrives on the working day before. Your contract states the date that applies to you, and the payslip shows the actual payment date." },
+    { id: 2, q: "What is the cut-off for a change to my bank details?", cat: "Pay dates", published: true,
+      a: "Send bank detail changes before the cut-off on the 12th and they should apply to that month's run. Anything that arrives later usually takes effect the following month. Allow one full pay cycle for the change to show on a payslip." },
+    { id: 3, q: "Where do I find my payslip?", cat: "Payslips", published: true,
+      a: "Payslips are issued to your work email on pay day and are also held in the payroll portal. If you cannot sign in, ask Emma to reset your access rather than asking a colleague to forward their copy." },
+    { id: 4, q: "Why is my overtime missing from this month's payslip?", cat: "Overtime", published: true,
+      a: "Overtime is paid in the month it is approved, not the month it was worked. If your manager approved it after the cut-off, it moves to the next run. Check the approval date first, then send Emma the dates and hours if it is still missing." },
+    { id: 5, q: "How do I claim an expense back?", cat: "Expenses", published: true,
+      a: "Raise the claim in the expenses tool with the receipt attached, and your manager approves it. Approved claims are paid with the next payroll run rather than as a separate payment. Claims without a receipt are usually returned to you." },
+    { id: 6, q: "What happens to my pay if I take unpaid leave?", cat: "Leave", published: true,
+      a: "Unpaid leave is deducted at your daily rate for each working day you are away. The deduction appears as its own line on the payslip for the month the leave falls in. Part months are worked out on working days, so bank holidays in the period are not deducted." },
+    { id: 7, q: "My tax code looks wrong. What should I do?", cat: "Tax", published: true,
+      a: "Send Emma the code notice from HMRC and she can check it against the payroll record. Codes often change after a benefit in kind or a change of job, so include the reference from the letter. Do not change anything yourself in the portal." },
+    { id: 8, q: "How do I update my home address?", cat: "Personal", published: true,
+      a: "Update it in the HR system, because payroll reads the address from there. Tell Emma as well if the address affects a relocation allowance or a tax relief claim. Changes made after the cut-off show on the following month's payslip." },
+    { id: 9, q: "I think I have been underpaid. What happens next?", cat: "Pay query", published: true,
+      a: "Send Emma the pay period and the figure you expected, and she will check the run. Most differences come from a late timesheet, an unpaid absence or a change that arrived after the cut-off. Corrections are usually paid in the next run rather than as a separate payment." },
+    { id: 10, q: "How is the pension contribution taken from my pay?", cat: "Pension", published: true,
+      a: "The contribution is taken from your pay before tax, so the amount on your payslip is not the full cost to you. The percentage and the employer contribution are set out in your pension letter. You can change your percentage once a year unless your scheme says otherwise." },
+    { id: 11, q: "Can I get a letter confirming my salary?", cat: "Letters", published: true,
+      a: "Emma can produce a salary confirmation letter for a mortgage, a visa or a rental application. Ask with the name and address it should go to, and allow three working days. Lenders sometimes need their own wording, so attach their request if you have one." },
+    { id: 12, q: "Who do I tell about a change to my working hours?", cat: "Hours", published: true,
+      a: "Your manager approves the change first, then it comes to payroll so the contract and the pay can be updated. A change to hours affects holiday pay, so ask for the new holiday balance at the same time. Allow one full pay cycle for the new hours to appear." }
+  ];
+
+  const seedQueue = [
+    { id: 201, text: "My payslip shows a different tax code to the one on my P60. Which one is right?", visibility: "public", when: "2 days ago" },
+    { id: 202, text: "Can I split my pension contribution across two percentages?", visibility: "private", when: "yesterday" },
+    { id: 203, text: "I started in the middle of the month. Is my first pay reduced?", visibility: "public", when: "today" }
+  ];
+
+  const state = {
+    mode: "answers",
+    query: "",
+    cat: null,
+    open: {},
+    faqs: seedFaqs.slice(),
+    queue: seedQueue.slice(),
+    editingId: null,
+    confirmDelete: null,
+    answering: null,
+    nextId: 500
+  };
+
+  let lastFocus = null;
+
+  /* ------------------------------------------------------------------
+     Elements
+  ------------------------------------------------------------------ */
+
+  const $ = function (id) { return document.getElementById(id); };
+
+  const searchInput = $("searchInput");
+  const askInput = $("askInput");
+  const answersPane = $("answersPane");
+  const askPane = $("askPane");
+  const faqList = $("faqList");
+  const emptyState = $("emptyState");
+  const emptyHead = $("emptyHead");
+  const emptyAsk = $("emptyAsk");
+  const countEl = $("count");
+  const clearBtn = $("clearBtn");
+  const sendBtn = $("sendBtn");
+  const askErr = $("askErr");
+  const askConfirm = $("askConfirm");
+  const segBtns = Array.prototype.slice.call(document.querySelectorAll(".seg-btn"));
+  const visOpts = [$("visPublicOpt"), $("visPrivateOpt")];
+  const adminPanel = $("adminPanel");
+  const adminOpen = $("adminOpen");
+  const adminClose = $("adminClose");
+  const scrim = $("scrim");
+  const queueList = $("queueList");
+  const queueEmpty = $("queueEmpty");
+  const queueCount = $("queueCount");
+  const faqRows = $("faqRows");
+  const faqCount = $("faqCount");
+  const addFaq = $("addFaq");
+  const catList = $("catList");
+
+  /* ------------------------------------------------------------------
+     Helpers
+  ------------------------------------------------------------------ */
+
+  function esc(value) {
+    return String(value).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function persist() {
+    /* Storage hook. When a backend exists, write state.faqs and
+       state.queue to localStorage or POST them to an API from here.
+       The template stays in memory so the file works offline. */
+  }
+
+  function show(el, on) {
+    el.classList.toggle("is-hidden", !on);
+  }
+
+  function findFaq(id) {
+    return state.faqs.filter(function (f) { return f.id === id; })[0] || null;
+  }
+
+  function visibleFaqs() {
+    const terms = state.query.toLowerCase().split(/\s+/).filter(Boolean);
+    return state.faqs.filter(function (f) {
+      if (!f.published) { return false; }
+      if (state.cat && f.cat !== state.cat) { return false; }
+      if (!terms.length) { return true; }
+      const hay = (f.q + " " + f.a + " " + f.cat).toLowerCase();
+      return terms.every(function (t) { return hay.indexOf(t) !== -1; });
+    });
+  }
+
+  /* ------------------------------------------------------------------
+     Answers list
+  ------------------------------------------------------------------ */
+
+  function renderFaq() {
+    const rows = visibleFaqs();
+    const publishedTotal = state.faqs.filter(function (f) { return f.published; }).length;
+    const filtering = state.query.trim() !== "" || state.cat !== null;
+
+    faqList.innerHTML = rows.map(function (f) {
+      const open = state.open[f.id] === true;
+      return '<li class="row">' +
+        '<div class="row-top">' +
+          '<button type="button" class="chip" data-cat="' + esc(f.cat) + '" aria-pressed="' +
+            (state.cat === f.cat ? "true" : "false") + '">' + esc(f.cat) + '</button>' +
+          '<h3 class="row-h">' +
+            '<button type="button" class="row-head" data-toggle="' + f.id + '" id="head-' + f.id + '"' +
+              ' aria-expanded="' + (open ? "true" : "false") + '" aria-controls="panel-' + f.id + '">' +
+              '<span class="row-q">' + esc(f.q) + '</span>' +
+              '<span class="ind" aria-hidden="true"></span>' +
+            '</button>' +
+          '</h3>' +
+        '</div>' +
+        '<div class="row-body" id="panel-' + f.id + '"' + (open ? "" : " hidden") + '>' +
+          '<p class="row-a">' + esc(f.a) + '</p>' +
+        '</div>' +
+      '</li>';
+    }).join("");
+
+    countEl.textContent = rows.length + (rows.length === 1 ? " answer" : " answers") +
+      (filtering ? " of " + publishedTotal : "");
+
+    const nothing = rows.length === 0;
+    show(emptyState, nothing);
+    if (nothing) {
+      emptyHead.textContent = (publishedTotal === 0 && !filtering)
+        ? "No answers are published yet."
+        : "No answer matches that yet.";
+    }
+    show(clearBtn, filtering);
+  }
+
+  function toggleRow(id) {
+    const head = $("head-" + id);
+    const panel = $("panel-" + id);
+    if (!head || !panel) { return; }
+    const open = state.open[id] === true;
+    if (open) { delete state.open[id]; } else { state.open[id] = true; }
+    head.setAttribute("aria-expanded", open ? "false" : "true");
+    if (open) { panel.setAttribute("hidden", ""); } else { panel.removeAttribute("hidden"); }
+  }
+
+  faqList.addEventListener("click", function (e) {
+    const chip = e.target.closest(".chip");
+    if (chip) {
+      const cat = chip.getAttribute("data-cat");
+      state.cat = (state.cat === cat) ? null : cat;
+      renderFaq();
+      return;
+    }
+    const head = e.target.closest(".row-head");
+    if (head) { toggleRow(Number(head.getAttribute("data-toggle"))); }
+  });
+
+  searchInput.addEventListener("input", function () {
+    state.query = searchInput.value;
+    renderFaq();
+  });
+
+  clearBtn.addEventListener("click", function () {
+    state.query = "";
+    state.cat = null;
+    searchInput.value = "";
+    renderFaq();
+    searchInput.focus();
+  });
+
+  emptyAsk.addEventListener("click", function () {
+    const typed = searchInput.value.trim();
+    if (typed) { askInput.value = typed; }
+    setMode("ask", true);
+  });
+
+  /* ------------------------------------------------------------------
+     Mode switching
+  ------------------------------------------------------------------ */
+
+  function setMode(mode, focus) {
+    state.mode = mode;
+    const isAsk = mode === "ask";
+    segBtns.forEach(function (b) {
+      b.setAttribute("aria-pressed", b.getAttribute("data-mode") === mode ? "true" : "false");
+    });
+    show(answersPane, !isAsk);
+    show(askPane, isAsk);
+    show(searchInput, !isAsk);
+    show(askInput, isAsk);
+    show(askErr, false);
+    show(askConfirm, false);
+    if (isAsk) { show(clearBtn, false); } else { renderFaq(); }
+    if (focus) { (isAsk ? askInput : searchInput).focus(); }
+  }
+
+  segBtns.forEach(function (b) {
+    b.addEventListener("click", function () { setMode(b.getAttribute("data-mode"), true); });
+  });
+
+  function syncVis() {
+    visOpts.forEach(function (opt) {
+      const input = opt.querySelector("input");
+      opt.classList.toggle("is-on", input.checked);
+    });
+  }
+
+  visOpts.forEach(function (opt) {
+    opt.querySelector("input").addEventListener("change", syncVis);
+  });
+
+  askInput.addEventListener("input", function () {
+    show(askErr, false);
+    show(askConfirm, false);
+  });
+
+  askInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      sendQuestion();
+    }
+  });
+
+  sendBtn.addEventListener("click", sendQuestion);
+
+  function sendQuestion() {
+    const text = askInput.value.trim();
+    if (!text) {
+      show(askConfirm, false);
+      show(askErr, true);
+      askInput.focus();
+      return;
+    }
+    const picked = document.querySelector('input[name="vis"]:checked');
+    const visibility = picked ? picked.value : "public";
+    state.queue.unshift({ id: state.nextId++, text: text, visibility: visibility, when: "just now" });
+    persist();
+    askInput.value = "";
+    show(askErr, false);
+    askConfirm.textContent = visibility === "public"
+      ? "Thanks. Your question is in Emma's queue as a public question, so she can add the answer to this list for everyone."
+      : "Thanks. Your question is in Emma's queue as a private question, so only Emma sees it.";
+    show(askConfirm, true);
+    renderQueue();
+  }
+
+  /* ------------------------------------------------------------------
+     Admin: pending queue
+  ------------------------------------------------------------------ */
+
+  function renderQueue() {
+    queueCount.textContent = String(state.queue.length);
+    show(queueEmpty, state.queue.length === 0);
+
+    queueList.innerHTML = state.queue.map(function (item) {
+      const isPrivate = item.visibility === "private";
+      const answering = state.answering === item.id;
+      let body;
+      if (answering) {
+        body = '<div class="mt">' +
+            '<label class="cell-label" for="aq-' + item.id + '">Question as it will appear</label>' +
+            '<input class="inp" id="aq-' + item.id + '" type="text" value="' + esc(item.text) + '">' +
+            '<label class="cell-label mt" for="ac-' + item.id + '">Category</label>' +
+            '<input class="inp" id="ac-' + item.id + '" type="text" list="catList" value="General">' +
+            '<label class="cell-label mt" for="aa-' + item.id + '">Answer</label>' +
+            '<textarea class="ta" id="aa-' + item.id + '" rows="4" placeholder="Write the answer colleagues will read"></textarea>' +
+            '<p class="err is-hidden" data-qerr="' + item.id + '">Write an answer before publishing.</p>' +
+            '<div class="q-actions mt">' +
+              '<button type="button" class="btn-primary" data-publish="' + item.id + '">Publish to FAQ</button>' +
+              '<button type="button" class="btn-text" data-cancel="' + item.id + '">Cancel</button>' +
+            '</div>' +
+          '</div>';
+      } else {
+        body = '<div class="q-actions">' +
+            '<button type="button" class="btn-ghost" data-answer="' + item.id + '">Answer</button>' +
+            '<button type="button" class="btn-text" data-dismiss="' + item.id + '">Dismiss</button>' +
+          '</div>';
+      }
+      return '<li class="q-item">' +
+        '<div class="q-top">' +
+          '<p class="q-text">' + esc(item.text) + '</p>' +
+          '<span class="tag' + (isPrivate ? " tag-priv" : "") + '">' + (isPrivate ? "Private" : "Public") + '</span>' +
+        '</div>' +
+        '<p class="q-meta">Added ' + esc(item.when) + '</p>' +
+        body +
+      '</li>';
+    }).join("");
+  }
+
+  queueList.addEventListener("click", function (e) {
+    const btn = e.target.closest("button");
+    if (!btn) { return; }
+    const answer = btn.getAttribute("data-answer");
+    const dismiss = btn.getAttribute("data-dismiss");
+    const publish = btn.getAttribute("data-publish");
+    const cancel = btn.getAttribute("data-cancel");
+
+    if (answer) {
+      state.answering = Number(answer);
+      renderQueue();
+      const ta = $("aa-" + state.answering);
+      if (ta) { ta.focus(); }
+      return;
+    }
+    if (dismiss) {
+      state.queue = state.queue.filter(function (q) { return q.id !== Number(dismiss); });
+      persist();
+      renderQueue();
+      return;
+    }
+    if (cancel) {
+      state.answering = null;
+      renderQueue();
+      return;
+    }
+    if (publish) {
+      const id = Number(publish);
+      const item = state.queue.filter(function (q) { return q.id === id; })[0];
+      if (!item) { return; }
+      const qEl = $("aq-" + id);
+      const cEl = $("ac-" + id);
+      const aEl = $("aa-" + id);
+      const answerText = aEl ? aEl.value.trim() : "";
+      if (!answerText) {
+        show(queueList.querySelector('[data-qerr="' + id + '"]'), true);
+        if (aEl) { aEl.focus(); }
+        return;
+      }
+      const questionText = (qEl && qEl.value.trim()) || item.text;
+      const category = (cEl && cEl.value.trim()) || "General";
+      state.faqs.unshift({
+        id: state.nextId++,
+        q: questionText,
+        a: answerText,
+        cat: category,
+        published: true
+      });
+      state.queue = state.queue.filter(function (q) { return q.id !== id; });
+      state.answering = null;
+      persist();
+      renderAll();
+    }
+  });
+
+  /* ------------------------------------------------------------------
+     Admin: FAQ table
+  ------------------------------------------------------------------ */
+
+  function renderTable() {
+    faqCount.textContent = String(state.faqs.length);
+
+    const cats = [];
+    state.faqs.forEach(function (f) {
+      if (cats.indexOf(f.cat) === -1) { cats.push(f.cat); }
+    });
+    catList.innerHTML = cats.map(function (c) {
+      return '<option value="' + esc(c) + '"></option>';
+    }).join("");
+
+    faqRows.innerHTML = state.faqs.map(function (f) {
+      const editing = state.editingId === f.id;
+      const confirming = state.confirmDelete === f.id;
+
+      let qCell, cCell, actCell;
+
+      if (editing) {
+        qCell = '<td data-label="Question">' +
+            '<label class="cell-label" for="q-' + f.id + '">Question</label>' +
+            '<input class="inp" id="q-' + f.id + '" type="text" value="' + esc(f.q) + '">' +
+            '<label class="cell-label mt" for="a-' + f.id + '">Answer</label>' +
+            '<textarea class="ta" id="a-' + f.id + '" rows="4">' + esc(f.a) + '</textarea>' +
+            '<p class="err is-hidden" data-ferr="' + f.id + '">Add a question and an answer before saving.</p>' +
+          '</td>';
+        cCell = '<td data-label="Category">' +
+            '<label class="cell-label" for="c-' + f.id + '">Category</label>' +
+            '<input class="inp" id="c-' + f.id + '" type="text" list="catList" value="' + esc(f.cat) + '">' +
+          '</td>';
+        actCell = '<td data-label="Actions" class="tbl-act">' +
+            '<button type="button" class="btn-primary" data-save="' + f.id + '">Save</button>' +
+            '<button type="button" class="btn-text" data-editcancel="' + f.id + '">Cancel</button>' +
+          '</td>';
+      } else {
+        qCell = '<td data-label="Question"><p class="tbl-q">' + esc(f.q) + '</p></td>';
+        cCell = '<td data-label="Category"><span class="tag">' + esc(f.cat) + '</span></td>';
+        actCell = '<td data-label="Actions" class="tbl-act">' +
+          (confirming
+            ? '<span class="tbl-confirm">Delete this entry?</span>' +
+              '<button type="button" class="btn-ghost" data-delyes="' + f.id + '">Yes, delete</button>' +
+              '<button type="button" class="btn-text" data-delno="' + f.id + '">Keep</button>'
+            : '<button type="button" class="btn-ghost" data-edit="' + f.id + '">Edit</button>' +
+              '<button type="button" class="btn-text" data-del="' + f.id + '">Delete</button>') +
+          '</td>';
+      }
+
+      return '<tr>' + qCell + cCell +
+        '<td data-label="State">' +
+          '<button type="button" class="btn-ghost" data-pub="' + f.id + '" aria-pressed="' +
+            (f.published ? "true" : "false") + '">' + (f.published ? "Published" : "Draft") + '</button>' +
+        '</td>' +
+        actCell + '</tr>';
+    }).join("");
+  }
+
+  faqRows.addEventListener("click", function (e) {
+    const btn = e.target.closest("button");
+    if (!btn) { return; }
+    const pub = btn.getAttribute("data-pub");
+    const edit = btn.getAttribute("data-edit");
+    const del = btn.getAttribute("data-del");
+    const delyes = btn.getAttribute("data-delyes");
+    const delno = btn.getAttribute("data-delno");
+    const save = btn.getAttribute("data-save");
+    const cancel = btn.getAttribute("data-editcancel");
+
+    if (pub) {
+      const f = findFaq(Number(pub));
+      if (f) { f.published = !f.published; persist(); renderAll(); }
+      return;
+    }
+    if (edit) {
+      state.editingId = Number(edit);
+      state.confirmDelete = null;
+      renderTable();
+      const inp = $("q-" + state.editingId);
+      if (inp) { inp.focus(); }
+      return;
+    }
+    if (del) {
+      state.confirmDelete = Number(del);
+      renderTable();
+      return;
+    }
+    if (delno) {
+      state.confirmDelete = null;
+      renderTable();
+      return;
+    }
+    if (delyes) {
+      const id = Number(delyes);
+      state.faqs = state.faqs.filter(function (f) { return f.id !== id; });
+      delete state.open[id];
+      state.confirmDelete = null;
+      if (state.editingId === id) { state.editingId = null; }
+      persist();
+      renderAll();
+      return;
+    }
+    if (cancel) {
+      const id = Number(cancel);
+      const f = findFaq(id);
+      if (f && f.isNew) {
+        state.faqs = state.faqs.filter(function (x) { return x.id !== id; });
+      }
+      state.editingId = null;
+      persist();
+      renderAll();
+      return;
+    }
+    if (save) {
+      const id = Number(save);
+      const f = findFaq(id);
+      if (!f) { return; }
+      const qEl = $("q-" + id);
+      const aEl = $("a-" + id);
+      const cEl = $("c-" + id);
+      const qv = qEl ? qEl.value.trim() : "";
+      const av = aEl ? aEl.value.trim() : "";
+      if (!qv || !av) {
+        show(faqRows.querySelector('[data-ferr="' + id + '"]'), true);
+        return;
+      }
+      f.q = qv;
+      f.a = av;
+      f.cat = (cEl && cEl.value.trim()) || "General";
+      f.isNew = false;
+      state.editingId = null;
+      persist();
+      renderAll();
+    }
+  });
+
+  addFaq.addEventListener("click", function () {
+    const id = state.nextId++;
+    state.faqs.push({ id: id, q: "", a: "", cat: "General", published: false, isNew: true });
+    state.editingId = id;
+    state.confirmDelete = null;
+    renderAll();
+    const inp = $("q-" + id);
+    if (inp) {
+      inp.focus();
+      if (inp.scrollIntoView) { inp.scrollIntoView({ block: "nearest" }); }
+    }
+  });
+
+  /* ------------------------------------------------------------------
+     Admin overlay
+  ------------------------------------------------------------------ */
+
+  function openAdmin() {
+    lastFocus = document.activeElement;
+    renderQueue();
+    renderTable();
+    adminPanel.classList.add("is-open");
+    scrim.classList.add("is-open");
+    document.body.style.overflow = "hidden";
+    window.setTimeout(function () { adminClose.focus(); }, 0);
+  }
+
+  function closeAdmin() {
+    adminPanel.classList.remove("is-open");
+    scrim.classList.remove("is-open");
+    document.body.style.overflow = "";
+    state.editingId = null;
+    state.confirmDelete = null;
+    state.answering = null;
+    renderAll();
+    if (lastFocus && lastFocus.focus) { lastFocus.focus(); }
+  }
+
+  adminOpen.addEventListener("click", openAdmin);
+  adminClose.addEventListener("click", closeAdmin);
+  scrim.addEventListener("click", closeAdmin);
+
+  adminPanel.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") { closeAdmin(); return; }
+    if (e.key !== "Tab") { return; }
+    const nodes = Array.prototype.filter.call(
+      adminPanel.querySelectorAll("button, input, textarea, select, a[href]"),
+      function (el) { return !el.disabled && el.getClientRects().length > 0; }
+    );
+    if (!nodes.length) { return; }
+    const first = nodes[0];
+    const last = nodes[nodes.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  });
+
+  /* ------------------------------------------------------------------
+     Start
+  ------------------------------------------------------------------ */
+
+  function renderAll() {
+    renderFaq();
+    renderQueue();
+    renderTable();
+    syncVis();
+  }
+
+  setMode("answers", false);
+  syncVis();
+  renderAll();
+})();
+</script>
+</body>
+</html>

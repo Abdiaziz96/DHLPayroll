@@ -1,0 +1,13 @@
+# Soft Cloud, design notes
+1. Layout is one centred column, 760px wide, so the ask box, the search field and the FAQ share a single measure. Hero copy is centred, text inside cards is left aligned.
+2. The reference order is kept: pill banner, large title, one supporting line, white ask card, pill toggle under the card, then the FAQ. The clouds are one inline SVG path reused twice, absolutely positioned in the hero and aria hidden.
+3. Gradients are three low opacity radial washes, two in the top corners and one at the bottom, dialled back from the reference so near black headings keep roughly 17 to 1 contrast, well past AA.
+4. Colour is one accent, DHL red #D40511, over cream #FDF8F3, warm grey #5C534D body text and near black #1A1614 headings. Red is used only on the send button, links, focus rings and small badges.
+5. Type is a single family, Instrument Sans, from one Google Fonts link with a system fallback stack. The display size leans on tight tracking and a 600 weight rather than a second typeface.
+6. The ask box is one white rounded card, 20px radius, 1px pale border, soft shadow, with a borderless textarea. The focus ring is drawn on the card through :focus-within so the box reads as one control.
+7. The two tab pill under the box is the public or private choice. Public questions may be added to the FAQ, private ones go to Emma only. Sending shows an inline status line and files the question in the admin inbox.
+8. FAQ rows are real buttons carrying aria-expanded and aria-controls, grouped into four categories, one white set per category. The search field filters question, answer and category text, with an empty state that offers a clear button.
+9. Admin is a dialog drawer from the right, opened from the header and closed by the close button, the scrim or Escape, with focus returned to the header button.
+10. It renders from the same in memory arrays as the public list, so an edit is visible the moment the drawer closes. Answer opens an inline form in the inbox item, Edit swaps a row for a form, the switch toggles published state with aria-pressed, and delete needs a second click.
+11. All data sits in one state object with a persist() no-op called after every change, so adding localStorage is one line there plus a read before the first render. Trade-off: nothing persists and nothing is submitted, so a reload resets the page, which is what buys a single file that opens straight from disk.
+12. Trade-off: the public or private choice sits under the ask box rather than inside it, which is where the reference placed its pill toggle. The card bottom row stays calm, but the toggle is a little further from the textarea than a strict reading of the brief would want.

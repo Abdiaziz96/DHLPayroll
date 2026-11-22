@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin - DHL Payroll Answers</title>
+<meta name="description" content="Answer colleague questions and manage the payroll FAQ.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23d40511'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body class="a-body">
+<a class="skip-link" href="#main">Skip to the admin tools</a>
+
+<header class="a-topbar">
+  <div class="a-brand">
+    <span class="a-brand__mark" aria-hidden="true"></span>
+    <span class="a-brand__name">Payroll Answers</span>
+    <span class="a-brand__tag">Admin</span>
+  </div>
+
+  <div class="a-search">
+    <label class="visually-hidden" for="adminSearch">Search the answers</label>
+    <input id="adminSearch" type="search" autocomplete="off" placeholder="Search the answers">
+  </div>
+
+  <a class="btn" href="index.html">View public page</a>
+</header>
+
+<div class="a-shell">
+
+  <aside class="a-side">
+    <p class="a-side__label">Queue</p>
+    <nav class="a-nav" id="navQueue" aria-label="Question queue">
+      <button class="a-nav__item" type="button" id="navInbox" data-view="inbox" data-category="" aria-current="true">
+        <span class="a-nav__label">Waiting for an answer</span>
+        <span class="a-nav__count a-nav__count--alert" id="navPending">0</span>
+      </button>
+      <button class="a-nav__item" type="button" id="navAnswered" data-view="answered" data-category="">
+        <span class="a-nav__label">Already answered</span>
+        <span class="a-nav__count" id="navAnsweredCount">0</span>
+      </button>
+    </nav>
+
+    <p class="a-side__label">Answers</p>
+    <nav class="a-nav" id="navCats" aria-label="Answer categories"></nav>
+
+    <p class="a-side__label">Demo data</p>
+    <div class="demo-grid">
+      <button class="btn btn--sm" type="button" id="btnExport">Export</button>
+      <button class="btn btn--sm" type="button" id="btnImport">Import</button>
+      <button class="btn btn--sm btn--danger" type="button" id="btnReset">Reset</button>
+    </div>
+    <p class="demo-note" id="storageNote"></p>
+  </aside>
+
+  <main class="a-main" id="main">
+    <div class="a-head">
+      <h1 class="a-h1" id="viewTitle">Waiting for an answer</h1>
+      <p class="a-lede" id="viewLede"></p>
+      <p class="a-meta" id="viewMeta"></p>
+    </div>
+    <div id="view"></div>
+  </main>
+
+</div>
+
+<footer class="a-foot">
+  <p>Demo build. Answers are saved in this browser only, and there is no login yet. Nothing here is an official DHL policy statement.</p>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/js/store.js"></script>
+<script src="assets/js/admin.js"></script>
+</body>
+</html>

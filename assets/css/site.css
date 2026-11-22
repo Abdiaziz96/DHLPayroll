@@ -1,0 +1,496 @@
+/* DHL Payroll Answers - shared tokens, base styles and the public page.
+   No webfonts on purpose: the whole site is a handful of static files with zero
+   network requests, which is what keeps it instant on a slow warehouse connection. */
+
+:root {
+  /* brand */
+  --red: #d40511;
+  --red-dark: #a3030d;
+  --red-tint: #fdeceb;
+  --yellow: #ffcc00;
+
+  /* warm neutrals, public page */
+  --cream: #fdfaf7;
+  --cream-2: #f7f1ea;
+  --card: #ffffff;
+  --ink: #1b1917;
+  --ink-2: #57504c;
+  --ink-3: #8d857f;
+  --line: #ece4dc;
+  --line-2: #e0d6cb;
+
+  /* cool neutrals, admin page */
+  --g50: #f7f8f9;
+  --g100: #eef0f2;
+  --g200: #e0e4e8;
+  --g300: #cbd1d7;
+  --g500: #6b737a;
+  --g700: #333a41;
+  --g900: #14181c;
+
+  --green: #147a4b;
+  --green-tint: #e8f5ee;
+  --amber: #8a5a00;
+  --amber-tint: #fdf3e0;
+
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-pill: 999px;
+
+  --sh-1: 0 1px 2px rgba(27, 25, 23, .05), 0 10px 30px -14px rgba(27, 25, 23, .22);
+  --sh-2: 0 2px 6px rgba(27, 25, 23, .07), 0 28px 64px -26px rgba(27, 25, 23, .32);
+
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --wrap: 860px;
+  --ease: cubic-bezier(.2, .7, .3, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--ink);
+  background: var(--cream);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, p, figure { margin: 0; }
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: inherit; }
+
+[hidden] { display: none !important; }
+
+:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 2px;
+  border-radius: var(--r-xs);
+}
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px;
+  margin: -1px; padding: 0; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute; left: 16px; top: -60px; z-index: 50;
+  background: var(--ink); color: #fff; padding: 10px 16px;
+  border-radius: var(--r-sm); text-decoration: none;
+  transition: top .18s var(--ease);
+}
+.skip-link:focus { top: 16px; }
+
+/* ---------------------------------------------------------------- public page */
+
+.page {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background:
+    radial-gradient(760px 460px at -8% 6%, rgba(255, 158, 96, .34), transparent 64%),
+    radial-gradient(760px 460px at 108% 6%, rgba(255, 178, 118, .32), transparent 64%),
+    radial-gradient(900px 700px at 50% 118%, rgba(255, 214, 170, .28), transparent 70%),
+    var(--cream);
+}
+
+.cloud {
+  position: absolute;
+  z-index: 0;
+  color: #fff;
+  opacity: .9;
+  pointer-events: none;
+}
+.cloud--tl { top: 96px; left: 4vw; width: 190px; }
+.cloud--tr { top: 118px; right: 4vw; width: 168px; }
+.cloud--sm { top: 236px; left: 12vw; width: 96px; opacity: .7; }
+
+.topbar {
+  position: relative;
+  z-index: 2;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 22px 24px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 650;
+  letter-spacing: -.01em;
+}
+.brand__mark {
+  width: 22px; height: 22px;
+  border-radius: 6px;
+  background: var(--red);
+  flex: none;
+}
+.brand__name { font-size: 15px; }
+
+.admin-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, .72);
+  color: var(--ink-2);
+  font-size: 14px;
+  font-weight: 550;
+  text-decoration: none;
+  transition: background .16s var(--ease), border-color .16s var(--ease), color .16s var(--ease);
+}
+.admin-link:hover { background: #fff; color: var(--ink); border-color: var(--line-2); }
+.admin-link__count {
+  min-width: 20px;
+  padding: 0 6px;
+  border-radius: var(--r-pill);
+  background: var(--red);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 650;
+  text-align: center;
+  line-height: 20px;
+}
+
+.hero {
+  position: relative;
+  z-index: 1;
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: 30px 24px 0;
+  text-align: center;
+}
+
+.pill-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 34px;
+  padding: 9px 18px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, .82);
+  color: var(--red);
+  font-size: 14px;
+  font-weight: 550;
+  text-decoration: none;
+  box-shadow: 0 1px 2px rgba(27, 25, 23, .04);
+  transition: transform .16s var(--ease), box-shadow .16s var(--ease);
+}
+.pill-banner:hover { transform: translateY(-1px); box-shadow: var(--sh-1); }
+.pill-banner svg { flex: none; }
+
+.hero__title {
+  font-size: clamp(2.1rem, 6.4vw, 3.9rem);
+  line-height: 1.04;
+  letter-spacing: -.035em;
+  font-weight: 640;
+  max-width: 15ch;
+  margin: 0 auto;
+}
+
+.hero__sub {
+  margin: 18px auto 0;
+  max-width: 46ch;
+  color: var(--ink-2);
+  font-size: 1.06rem;
+}
+
+/* ask card */
+
+.ask {
+  margin: 34px auto 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-1);
+  text-align: left;
+  overflow: hidden;
+  transition: box-shadow .2s var(--ease), border-color .2s var(--ease);
+}
+.ask:focus-within { border-color: var(--line-2); box-shadow: var(--sh-2); }
+
+.ask__field {
+  display: block;
+  width: 100%;
+  min-height: 116px;
+  padding: 22px 24px 4px;
+  border: 0;
+  background: transparent;
+  resize: vertical;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+.ask__field::placeholder { color: var(--ink-3); }
+.ask__field:focus { outline: none; }
+
+.ask__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px 14px 24px;
+}
+.ask__hint { color: var(--ink-3); font-size: 13.5px; }
+.ask__meta { display: flex; align-items: center; gap: 14px; }
+.ask__count { color: var(--ink-3); font-size: 13px; font-variant-numeric: tabular-nums; }
+
+.send {
+  width: 46px; height: 46px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--red);
+  color: #fff;
+  transition: background .16s var(--ease), transform .16s var(--ease);
+}
+.send:hover { background: var(--red-dark); transform: translateY(-1px); }
+.send:active { transform: translateY(0); }
+.send[disabled] { background: var(--g300); cursor: not-allowed; transform: none; }
+
+/* public / private switch */
+
+.visibility {
+  display: flex;
+  justify-content: center;
+  margin-top: 22px;
+}
+.seg {
+  display: inline-flex;
+  padding: 4px;
+  gap: 4px;
+  background: rgba(255, 255, 255, .8);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-pill);
+}
+.seg__btn {
+  border: 0;
+  background: transparent;
+  padding: 9px 18px;
+  border-radius: var(--r-pill);
+  font-size: 14px;
+  font-weight: 550;
+  color: var(--ink-2);
+  transition: background .16s var(--ease), color .16s var(--ease);
+}
+.seg__btn:hover { color: var(--ink); }
+.seg__btn[aria-pressed="true"] {
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 0 1px 3px rgba(27, 25, 23, .12);
+}
+
+.visibility__note {
+  margin: 12px auto 0;
+  max-width: 48ch;
+  text-align: center;
+  color: var(--ink-3);
+  font-size: 13.5px;
+}
+
+.form-note {
+  margin: 16px auto 0;
+  max-width: 52ch;
+  text-align: center;
+  padding: 11px 16px;
+  border-radius: var(--r-md);
+  font-size: 14px;
+  font-weight: 500;
+}
+.form-note--ok { background: var(--green-tint); color: var(--green); }
+.form-note--err { background: var(--red-tint); color: var(--red-dark); }
+
+/* faq */
+
+.faq {
+  position: relative;
+  z-index: 1;
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: 64px 24px 0;
+}
+
+.faq__head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.faq__title { font-size: 1.55rem; font-weight: 640; letter-spacing: -.02em; }
+.faq__count { color: var(--ink-3); font-size: 14px; }
+
+.search {
+  position: relative;
+  margin-bottom: 28px;
+}
+.search__icon {
+  position: absolute;
+  left: 18px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink-3);
+  pointer-events: none;
+}
+.search__input {
+  width: 100%;
+  /* the right padding is the gap the shortcut chip lives in, so the placeholder
+     and any typed text stop before the chip instead of running underneath it */
+  padding: 15px 172px 15px 48px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, .86);
+  transition: background .16s var(--ease), border-color .16s var(--ease);
+}
+.search__input::placeholder { color: var(--ink-3); }
+.search__input:focus { outline: none; background: #fff; border-color: var(--red); box-shadow: 0 0 0 3px var(--red-tint); }
+
+.search__hint {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 10px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-pill);
+  background: var(--card);
+  color: var(--ink-3);
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: opacity .16s var(--ease);
+}
+.search__key {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: var(--r-xs);
+  background: var(--cream-2);
+  color: var(--ink-2);
+}
+/* once someone is typing the chip has done its job, and the native clear
+   button needs the same corner, so the chip steps aside */
+.search__input:not(:placeholder-shown) ~ .search__hint { opacity: 0; }
+/* ...and the space it reserved goes back to the field, so typed text and the
+   native clear button are not pushed 172px away from the right edge */
+.search__input:not(:placeholder-shown) { padding-right: 20px; }
+
+.cat { margin-bottom: 26px; }
+.cat__name {
+  margin-bottom: 8px;
+  color: var(--ink-3);
+  font-size: 12.5px;
+  font-weight: 650;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.rows {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+.row + .row { border-top: 1px solid var(--line); }
+
+.row__btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: 17px 20px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font-size: 15.5px;
+  font-weight: 520;
+  transition: background .14s var(--ease);
+}
+.row__btn:hover { background: var(--cream-2); }
+.row__chev { flex: none; color: var(--ink-3); transition: transform .2s var(--ease); }
+.row__btn[aria-expanded="true"] { background: var(--cream-2); }
+.row__btn[aria-expanded="true"] .row__chev { transform: rotate(180deg); color: var(--red); }
+
+.row__panel { padding: 0 20px 20px; }
+.row__panel p { color: var(--ink-2); font-size: 15px; max-width: 68ch; }
+.row__updated { margin-top: 10px; color: var(--ink-3); font-size: 12.5px; }
+
+.empty {
+  padding: 40px 24px;
+  text-align: center;
+  background: var(--card);
+  border: 1px dashed var(--line-2);
+  border-radius: var(--r-md);
+}
+.empty__title { font-weight: 600; }
+.empty__body { margin-top: 6px; color: var(--ink-3); font-size: 14.5px; }
+
+.foot {
+  position: relative;
+  z-index: 1;
+  max-width: var(--wrap);
+  margin: 72px auto 0;
+  padding: 26px 24px 54px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-3);
+  font-size: 13.5px;
+  text-align: center;
+}
+.foot strong { color: var(--ink-2); font-weight: 600; }
+
+@media (max-width: 720px) {
+  .cloud--tl, .cloud--tr { width: 120px; opacity: .65; }
+  .cloud--sm { display: none; }
+  .hero { padding-top: 18px; }
+  .pill-banner { margin-bottom: 24px; font-size: 13px; }
+  .ask__field { padding: 18px 18px 4px; min-height: 96px; }
+  .ask__foot { padding: 8px 12px 12px 18px; }
+  .ask__hint { display: none; }
+  .faq { padding-top: 46px; }
+}
+
+@media (max-width: 420px) {
+  /* the chip has to stay clear of the placeholder on a 320px phone, so it
+     tightens up and the field reserves just enough room for it. The page
+     shortens the placeholder at this width too, so nothing is cut mid-word. */
+  .search__hint { right: 10px; gap: 2px; padding: 3px 7px; font-size: 10.5px; }
+  .search__key { font-size: 10px; padding: 2px 3px; }
+  .search__input { padding-right: 116px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  .cloud, .topbar, .ask, .visibility, .search, .foot { display: none !important; }
+}

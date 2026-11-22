@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payroll Answers</title>
+<meta name="description" content="Ask a payroll question and read the answers colleagues ask for most often. Static design template.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Soft Cloud: one accent (DHL red), cream neutrals, warm grey text, near black ink. */
+:root{
+  --cream:#FDF8F3;
+  --cream-deep:#F5ECE2;
+  --paper:#FFFFFF;
+  --ink:#1A1614;
+  --ink-soft:#5C534D;
+  --ink-faint:#877B72;
+  --line:#EADFD5;
+  --line-strong:#DCCFC2;
+  --accent:#D40511;
+  --accent-ink:#A8030D;
+  --accent-wash:#FCECEC;
+  --shadow-sm:0 1px 2px rgba(63,42,26,.05), 0 8px 22px rgba(63,42,26,.06);
+  --shadow-lg:0 2px 4px rgba(63,42,26,.05), 0 26px 60px rgba(63,42,26,.10);
+  --radius:20px;
+  --radius-sm:12px;
+  --font:'Instrument Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;}
+[hidden]{display:none !important;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:var(--font);
+  font-size:1rem;
+  line-height:1.55;
+  color:var(--ink);
+  background-color:var(--cream);
+  background-image:
+    radial-gradient(44% 36% at 0% 12%, rgba(255,176,108,.30), rgba(255,176,108,0) 68%),
+    radial-gradient(42% 34% at 100% 6%, rgba(255,148,116,.26), rgba(255,148,116,0) 66%),
+    radial-gradient(70% 42% at 50% 104%, rgba(255,206,150,.18), rgba(255,206,150,0) 72%);
+  background-repeat:no-repeat;
+  overflow-x:hidden;
+}
+h1,h2,h3,h4,p,ul,ol{margin:0;}
+ul,ol{padding:0;list-style:none;}
+button,input,select,textarea{font:inherit;color:inherit;}
+a{color:var(--accent-ink);text-decoration-thickness:1px;text-underline-offset:2px;}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
+}
+.skip{
+  position:absolute;left:12px;top:-60px;z-index:60;
+  background:var(--ink);color:var(--cream);padding:10px 14px;border-radius:10px;
+  text-decoration:none;transition:top .15s ease;
+}
+.skip:focus{top:12px;color:var(--cream);}
+.wrap{width:100%;max-width:760px;margin:0 auto;padding:0 20px;}
+
+/* Header */
+.site-head{position:relative;z-index:5;}
+.site-head .wrap{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding-top:22px;padding-bottom:22px;
+}
+.brand{
+  font-weight:600;font-size:1rem;letter-spacing:-.01em;color:var(--ink);
+  text-decoration:none;display:inline-flex;align-items:center;gap:9px;
+}
+.brand-mark{
+  width:20px;height:20px;border-radius:6px;background:var(--accent);
+  display:inline-block;flex:none;
+}
+.admin-link{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--paper);border:1px solid var(--line-strong);border-radius:999px;
+  padding:9px 14px;font-size:.875rem;font-weight:500;color:var(--ink-soft);
+  cursor:pointer;min-height:40px;
+}
+.admin-link:hover{border-color:var(--ink-faint);color:var(--ink);}
+.badge{
+  min-width:20px;padding:1px 6px;border-radius:999px;
+  background:var(--accent-wash);color:var(--accent-ink);
+  font-size:.75rem;font-weight:600;line-height:1.4;text-align:center;
+}
+.badge[hidden]{display:none !important;}
+
+/* Hero */
+.hero{position:relative;text-align:center;padding:26px 0 8px;}
+.cloud{
+  position:absolute;color:#D9C3AE;opacity:.85;pointer-events:none;
+  width:132px;height:132px;top:-6px;
+}
+.cloud-a{left:-26px;}
+.cloud-b{right:-18px;top:34px;width:104px;height:104px;opacity:.7;}
+.cloud path{fill:none;stroke:currentColor;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;}
+.banner{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--paper);border:1px solid var(--line);border-radius:999px;
+  padding:8px 14px;font-size:.8125rem;font-weight:600;color:var(--accent-ink);
+  cursor:pointer;box-shadow:var(--shadow-sm);
+}
+.banner:hover{border-color:var(--line-strong);}
+.banner svg{width:14px;height:14px;flex:none;}
+.banner svg path{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.hero h1{
+  font-size:clamp(1.95rem, 7vw, 3.4rem);
+  line-height:1.06;
+  letter-spacing:-.032em;
+  font-weight:600;
+  margin:22px auto 0;
+  max-width:19ch;
+}
+.sub{
+  margin:16px auto 0;max-width:46ch;
+  color:var(--ink-soft);font-size:1.0625rem;line-height:1.55;
+}
+
+/* Ask box */
+.ask-card{
+  margin:30px auto 0;text-align:left;
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow-lg);
+  padding:20px 20px 14px;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+.ask-card:focus-within{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(212,5,17,.14), var(--shadow-lg);
+}
+.ask-card textarea{
+  display:block;width:100%;min-height:128px;
+  border:0;background:transparent;resize:vertical;
+  font-size:1.0625rem;line-height:1.55;color:var(--ink);
+  padding:4px 2px;
+}
+.ask-card textarea::placeholder{color:var(--ink-faint);}
+.ask-card textarea:focus{outline:none;}
+.ask-foot{
+  display:flex;align-items:center;gap:12px;
+  border-top:1px solid var(--line);
+  padding-top:12px;margin-top:8px;
+}
+.ask-hint{color:var(--ink-faint);font-size:.8125rem;}
+.counter{margin-left:auto;color:var(--ink-faint);font-size:.8125rem;white-space:nowrap;}
+.send{
+  flex:none;width:46px;height:46px;border-radius:50%;
+  border:0;background:var(--accent);color:#fff;
+  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
+  box-shadow:0 6px 16px rgba(212,5,17,.24);
+}
+.send:hover{background:var(--accent-ink);}
+.send:focus-visible{outline-color:var(--ink);}
+.send svg{width:19px;height:19px;}
+.send svg path{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
+
+/* Visibility pill */
+.vis-toggle{
+  margin:18px auto 0;
+  display:inline-flex;flex-wrap:wrap;gap:4px;justify-content:center;
+  background:var(--cream-deep);border:1px solid var(--line);border-radius:999px;padding:4px;
+}
+.vis-toggle button{
+  border:0;background:transparent;border-radius:999px;
+  padding:9px 16px;font-size:.875rem;font-weight:500;color:var(--ink-soft);
+  cursor:pointer;min-height:40px;
+}
+.vis-toggle button:hover{color:var(--ink);}
+.vis-toggle button[aria-pressed="true"]{
+  background:var(--paper);color:var(--ink);font-weight:600;box-shadow:var(--shadow-sm);
+}
+.vis-note{
+  margin:10px auto 0;max-width:44ch;
+  color:var(--ink-faint);font-size:.8125rem;line-height:1.5;
+}
+.ask-status{
+  margin:14px auto 0;max-width:46ch;font-size:.9375rem;
+  border-radius:var(--radius-sm);padding:0;
+}
+.ask-status.is-ok{background:var(--accent-wash);color:var(--accent-ink);padding:12px 14px;font-weight:500;}
+.ask-status.is-warn{background:var(--cream-deep);color:var(--ink);padding:12px 14px;}
+
+/* FAQ */
+.faq{padding:64px 0 8px;}
+.faq-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;}
+.faq-head h2{font-size:1.5rem;font-weight:600;letter-spacing:-.02em;}
+.faq-count{color:var(--ink-faint);font-size:.875rem;}
+.search{margin-top:18px;position:relative;}
+.search svg{
+  position:absolute;left:14px;top:50%;transform:translateY(-50%);
+  width:17px;height:17px;color:var(--ink-faint);pointer-events:none;
+}
+.search svg path{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;}
+.search input{
+  width:100%;border:1px solid var(--line-strong);border-radius:14px;
+  background:var(--paper);padding:13px 14px 13px 42px;
+  font-size:1rem;color:var(--ink);min-height:48px;
+}
+.search input::placeholder{color:var(--ink-faint);}
+.search input:focus{border-color:var(--accent);outline:2px solid rgba(212,5,17,.18);outline-offset:0;}
+.faq-group{margin-top:26px;}
+.cat{
+  font-size:.875rem;font-weight:600;color:var(--ink-faint);
+  margin:0 0 8px 2px;letter-spacing:.005em;
+}
+.qa-set{
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow-sm);overflow:hidden;
+}
+.qa + .qa{border-top:1px solid var(--line);}
+.qa-h{font-size:1rem;font-weight:500;}
+.qa-btn{
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  background:transparent;border:0;padding:16px 18px;text-align:left;
+  font-weight:500;font-size:1rem;line-height:1.4;color:var(--ink);cursor:pointer;
+  min-height:52px;
+}
+.qa-btn:hover{background:var(--cream);}
+.qa-btn:focus-visible{outline-offset:-3px;}
+.chev{flex:none;width:18px;height:18px;color:var(--ink-faint);transition:transform .18s ease;}
+.chev path{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.qa-btn[aria-expanded="true"] .chev{transform:rotate(180deg);color:var(--accent);}
+.qa-panel p{
+  padding:0 18px 18px;color:var(--ink-soft);font-size:.9375rem;line-height:1.62;
+  max-width:64ch;
+}
+.empty{
+  margin-top:24px;background:var(--paper);border:1px dashed var(--line-strong);
+  border-radius:var(--radius);padding:22px;text-align:center;
+}
+.empty p{color:var(--ink-soft);font-size:.9375rem;margin-bottom:12px;}
+.disclaimer{
+  margin-top:26px;color:var(--ink-faint);font-size:.8125rem;line-height:1.5;
+  max-width:60ch;
+}
+
+/* Buttons and forms */
+.btn-primary{
+  background:var(--accent);color:#fff;border:1px solid var(--accent);
+  border-radius:10px;padding:10px 15px;font-size:.9375rem;font-weight:600;
+  cursor:pointer;min-height:42px;
+}
+.btn-primary:hover{background:var(--accent-ink);border-color:var(--accent-ink);}
+.btn-quiet{
+  background:var(--paper);color:var(--ink);border:1px solid var(--line-strong);
+  border-radius:10px;padding:9px 13px;font-size:.875rem;font-weight:500;
+  cursor:pointer;min-height:40px;
+}
+.btn-quiet:hover{border-color:var(--ink-faint);}
+.btn-quiet.is-danger{color:var(--accent-ink);border-color:#EFC9C9;}
+.btn-quiet.is-danger:hover{background:var(--accent-wash);}
+.form{display:grid;gap:10px;margin-top:12px;}
+.form label{font-size:.8125rem;font-weight:500;color:var(--ink-soft);}
+.form input[type="text"],.form textarea,.form select{
+  width:100%;background:var(--paper);border:1px solid var(--line-strong);
+  border-radius:10px;padding:10px 12px;font-size:1rem;color:var(--ink);
+}
+.form textarea{resize:vertical;line-height:1.55;}
+.form input[type="text"]:focus,.form textarea:focus,.form select:focus{
+  border-color:var(--accent);outline:2px solid rgba(212,5,17,.18);outline-offset:0;
+}
+.form-row{display:flex;flex-wrap:wrap;gap:10px;}
+.check{display:flex;align-items:flex-start;gap:9px;font-size:.875rem;color:var(--ink-soft);font-weight:400;}
+.check input{width:17px;height:17px;flex:none;margin-top:2px;accent-color:var(--accent);}
+
+/* Footer */
+.site-foot{
+  margin-top:72px;padding:26px 0 56px;
+  border-top:1px solid var(--line);
+}
+.site-foot p{color:var(--ink-faint);font-size:.8125rem;line-height:1.6;max-width:62ch;}
+
+/* Admin drawer */
+.scrim{
+  position:fixed;inset:0;background:rgba(26,22,20,.34);z-index:20;
+  animation:fade-in .18s ease-out;
+}
+.admin{
+  position:fixed;top:0;right:0;bottom:0;z-index:30;
+  width:min(580px,100%);overflow-y:auto;overscroll-behavior:contain;
+  background:var(--cream);border-left:1px solid var(--line);
+  box-shadow:var(--shadow-lg);padding:24px 22px 60px;
+  animation:slide-in .22s ease-out;
+}
+@keyframes fade-in{from{opacity:0;}to{opacity:1;}}
+@keyframes slide-in{from{transform:translateX(24px);opacity:0;}to{transform:none;opacity:1;}}
+.admin-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+.admin-head h2{font-size:1.3125rem;font-weight:600;letter-spacing:-.02em;}
+.admin-sub{color:var(--ink-faint);font-size:.875rem;margin-top:4px;}
+.icon-btn{
+  flex:none;width:42px;height:42px;border-radius:50%;
+  background:var(--paper);border:1px solid var(--line-strong);
+  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-soft);
+}
+.icon-btn:hover{color:var(--ink);border-color:var(--ink-faint);}
+.icon-btn svg{width:17px;height:17px;}
+.icon-btn svg path{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;}
+.admin-status{margin-top:14px;font-size:.875rem;color:var(--ink-soft);}
+.admin-status.is-live{
+  background:var(--accent-wash);color:var(--accent-ink);font-weight:500;
+  border-radius:var(--radius-sm);padding:10px 12px;
+}
+.admin-sec{margin-top:28px;}
+.admin-sec h3{font-size:1rem;font-weight:600;display:flex;align-items:center;gap:9px;}
+.count{
+  background:var(--cream-deep);color:var(--ink-soft);
+  font-size:.75rem;font-weight:600;border-radius:999px;padding:2px 8px;
+}
+.inbox,.admin-list{margin-top:12px;display:grid;gap:10px;}
+.inbox-item,.admin-item{
+  background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px;
+}
+.inbox-item.is-answered{background:var(--cream);}
+.inbox-q{font-size:.9375rem;font-weight:500;line-height:1.45;}
+.inbox-meta{color:var(--ink-faint);font-size:.8125rem;margin-top:5px;}
+.inbox-actions{margin-top:12px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+.tag{
+  display:inline-block;background:var(--cream-deep);color:var(--ink-soft);
+  font-size:.75rem;font-weight:600;border-radius:999px;padding:3px 9px;
+}
+.admin-item-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;}
+.admin-q{font-size:.9375rem;font-weight:500;line-height:1.45;}
+.admin-meta{color:var(--ink-faint);font-size:.8125rem;margin-top:5px;}
+.admin-item-actions{margin-top:12px;display:flex;flex-wrap:wrap;gap:9px;align-items:center;}
+.switch{
+  display:inline-flex;align-items:center;gap:8px;background:var(--paper);
+  border:1px solid var(--line-strong);border-radius:999px;padding:7px 12px 7px 9px;
+  font-size:.8125rem;font-weight:500;color:var(--ink-soft);cursor:pointer;min-height:40px;
+}
+.switch:hover{border-color:var(--ink-faint);}
+.switch .track{
+  width:30px;height:17px;border-radius:999px;background:var(--line-strong);
+  position:relative;flex:none;transition:background .15s ease;
+}
+.switch .knob{
+  position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;
+  background:var(--paper);transition:transform .15s ease;
+}
+.switch[aria-pressed="true"]{color:var(--ink);}
+.switch[aria-pressed="true"] .track{background:var(--accent);}
+.switch[aria-pressed="true"] .knob{transform:translateX(13px);}
+.section-note{color:var(--ink-faint);font-size:.8125rem;margin-top:6px;}
+
+@media (max-width:640px){
+  .cloud-a{left:-40px;width:104px;height:104px;}
+  .cloud-b{right:-34px;width:86px;height:86px;}
+  .ask-card{padding:16px 16px 12px;}
+  .ask-hint{display:none;}
+  .counter{margin-left:0;}
+  .hero{padding-top:16px;}
+  .faq{padding-top:52px;}
+  .admin{padding:20px 16px 48px;}
+}
+@media (max-width:380px){
+  .qa-btn{padding:14px;}
+  .qa-panel p{padding:0 14px 16px;}
+  .vis-toggle button{padding:9px 12px;font-size:.8125rem;}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important;}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#faq">Skip to the answers</a>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"></span>DHL Payroll Answers</a>
+    <button class="admin-link" id="adminBtn" type="button" aria-haspopup="dialog" aria-controls="admin">
+      Emma's admin
+      <span class="badge" id="adminBadge" aria-hidden="true">3</span>
+      <span class="sr-only" id="adminBadgeText">, 3 questions waiting</span>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero wrap" aria-labelledby="heroTitle">
+    <svg class="cloud cloud-a" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+    </svg>
+    <svg class="cloud cloud-b" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+    </svg>
+
+    <p>
+      <button class="banner" id="bannerBtn" type="button">
+        <span id="bannerText">12 answers are already published</span>
+        <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 8l5 5 5-5"/></svg>
+      </button>
+    </p>
+
+    <h1 id="heroTitle">Pay questions, answered in one place.</h1>
+    <p class="sub">Type your question below and Emma picks it up. The answers colleagues ask for most often are listed further down the page.</p>
+
+    <div class="ask-card">
+      <label class="sr-only" for="askInput">Your payroll question</label>
+      <textarea id="askInput" maxlength="400" placeholder="Ask a payroll question, for example: when is overtime paid?" aria-describedby="visNote"></textarea>
+      <div class="ask-foot">
+        <span class="ask-hint">Emma reads every question</span>
+        <span class="counter" id="askCounter">0 of 400</span>
+        <button class="send" id="sendBtn" type="button" aria-label="Send this question to Emma">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="vis-toggle" role="group" aria-label="Who can see your question">
+      <button type="button" data-vis="public" aria-pressed="true">Public, may go in the FAQ</button>
+      <button type="button" data-vis="private" aria-pressed="false">Private, only Emma</button>
+    </div>
+    <p class="vis-note" id="visNote">Public questions can be added to the FAQ once they are answered. Private questions go to Emma only.</p>
+    <p class="ask-status" id="askStatus" role="status" aria-live="polite"></p>
+  </section>
+
+  <section class="faq wrap" id="faq" aria-labelledby="faqTitle">
+    <div class="faq-head">
+      <h2 id="faqTitle">Common questions</h2>
+      <p class="faq-count" id="faqCount"></p>
+    </div>
+
+    <div class="search">
+      <label class="sr-only" for="faqSearch">Search the answers</label>
+      <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M9 3a6 6 0 1 0 3.6 10.8L17 18"/></svg>
+      <input id="faqSearch" type="search" autocomplete="off" placeholder="Search the answers, for example overtime, tax code, payslip">
+    </div>
+
+    <div id="faqList"></div>
+
+    <div class="empty" id="faqEmpty" hidden>
+      <p id="faqEmptyText"></p>
+      <button class="btn-quiet" id="emptyClear" type="button">Clear the search</button>
+    </div>
+
+    <p class="disclaimer">These are general answers to the questions colleagues ask most often. Emma confirms anything specific to your pay, and the dates and rates shown here are examples rather than policy.</p>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p>DHL Payroll Answers is a static template. Nothing is sent or stored, so everything stays in this page until it is closed.</p>
+  </div>
+</footer>
+
+<div class="scrim" id="scrim" hidden></div>
+
+<aside class="admin" id="admin" role="dialog" aria-modal="true" aria-labelledby="adminTitle" hidden>
+  <div class="admin-head">
+    <div>
+      <h2 id="adminTitle">Emma's admin</h2>
+      <p class="admin-sub">Answer what has come in, and keep the FAQ current.</p>
+    </div>
+    <button class="icon-btn" id="adminClose" type="button" aria-label="Close the admin area">
+      <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 5l10 10M15 5L5 15"/></svg>
+    </button>
+  </div>
+
+  <p class="admin-status" id="adminStatus" role="status" aria-live="polite"></p>
+
+  <section class="admin-sec" aria-labelledby="inboxTitle">
+    <h3 id="inboxTitle">Questions waiting <span class="count" id="pendingCount">0</span></h3>
+    <ul class="inbox" id="inboxList"></ul>
+  </section>
+
+  <section class="admin-sec" aria-labelledby="addTitle">
+    <h3 id="addTitle">Add an FAQ entry</h3>
+    <form class="form" id="addForm">
+      <label for="addQ">Question</label>
+      <input id="addQ" name="question" type="text" required placeholder="For example: when is the pay run closed?">
+      <label for="addA">Answer</label>
+      <textarea id="addA" name="answer" rows="4" required placeholder="Plain workplace wording, no policy claims."></textarea>
+      <label for="addCat">Category</label>
+      <select id="addCat" name="category"></select>
+      <label class="check"><input type="checkbox" id="addPub" checked> Show in the public FAQ straight away</label>
+      <div class="form-row">
+        <button class="btn-primary" type="submit">Add entry</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="admin-sec" aria-labelledby="listTitle">
+    <h3 id="listTitle">FAQ entries <span class="count" id="faqAdminCount">0</span></h3>
+    <p class="section-note">Entries switched off stay in this list and are hidden from colleagues.</p>
+    <ul class="admin-list" id="adminFaqList"></ul>
+  </section>
+</aside>
+
+<script>
+(function () {
+  "use strict";
+
+  var CATEGORIES = [
+    "Pay dates and payslips",
+    "Overtime and shift pay",
+    "Deductions and tax",
+    "Leave and absence"
+  ];
+
+  /* In memory data. Everything on the page renders from here. */
+  var state = {
+    faqs: [
+      { id: "f1", cat: CATEGORIES[0], published: true,
+        question: "When do I get paid each month?",
+        answer: "Salary usually reaches accounts on the last working day of the month. When that date falls on a weekend or a bank holiday, it arrives on the working day before. In this template the example dates are 30 January and 27 February." },
+      { id: "f2", cat: CATEGORIES[0], published: true,
+        question: "Where can I find my payslip?",
+        answer: "Payslips are issued as a PDF, usually the day before pay day, to your work email address. Search your inbox for the word payslip, or open the payroll link in that message. No payroll system is connected in this template." },
+      { id: "f3", cat: CATEGORIES[0], published: true,
+        question: "I think my pay is wrong. What should I do first?",
+        answer: "Check your hours, your overtime and any changes for that period, then send Emma the pay period, the figure you expected and the figure you received. She can compare both against the payroll run." },
+      { id: "f4", cat: CATEGORIES[1], published: true,
+        question: "How is overtime worked out?",
+        answer: "As an example, the first few overtime hours in a week are often paid at time and a quarter, and anything beyond that at time and a half. The rates that apply to you are the ones written in your contract, so treat these as placeholders." },
+      { id: "f5", cat: CATEGORIES[1], published: true,
+        question: "I worked a bank holiday. How is it paid?",
+        answer: "If you were already rostered for that day, the hours are usually paid at the enhanced bank holiday rate. If you swapped a shift to cover it, say so in your question so Emma can check which rate applies to you." },
+      { id: "f6", cat: CATEGORIES[1], published: true,
+        question: "My timesheet was approved late. Will I still be paid?",
+        answer: "Timesheets approved after the payroll cut-off, around the 18th in this example, normally move into the next monthly run. Emma can confirm whether a manual adjustment is possible before then." },
+      { id: "f7", cat: CATEGORIES[2], published: true,
+        question: "Why has my tax changed this month?",
+        answer: "A new tax code from HMRC, a change to your student loan plan, or a benefit reported through payroll can all move the tax you pay. Send Emma the tax code printed on your latest payslip and she will check the record." },
+      { id: "f8", cat: CATEGORIES[2], published: true,
+        question: "What is this deduction on my payslip?",
+        answer: "The common ones are pension, cycle to work, season ticket loan and salary sacrifice for a lease car. If the code on your payslip is not one you recognise, ask Emma and quote the code exactly as it appears." },
+      { id: "f9", cat: CATEGORIES[2], published: true,
+        question: "Can I change my bank details or my pension contribution?",
+        answer: "Yes, both are changed by form. The payroll cut-off for a change to take effect in the same month is around the 15th in this example, and anything later usually applies from the following month." },
+      { id: "f10", cat: CATEGORIES[3], published: true,
+        question: "How is sick pay calculated?",
+        answer: "As an example, the first three days of sickness absence are unpaid and later days are paid at a percentage of average earnings. Your contract sets the scheme that applies to you, so ask Emma if you are unsure which one you are on." },
+      { id: "f11", cat: CATEGORIES[3], published: true,
+        question: "Does unpaid leave affect my pay?",
+        answer: "Yes. Unpaid days are deducted at your daily rate, so a month with unpaid leave shows a lower gross figure, and pension and tax come out slightly lower as well." },
+      { id: "f12", cat: CATEGORIES[3], published: true,
+        question: "When is holiday pay settled?",
+        answer: "Holiday pay for someone leaving, or for anyone on variable hours, is usually settled in the pay run after the leave is recorded. If it has not appeared after that run, send Emma the dates you took." }
+    ],
+    inbox: [
+      { id: "q1", from: "Priya Nair", team: "Marketing", when: "2 days ago", visibility: "public",
+        question: "Is the bank holiday rate paid if I was already rostered for the August bank holiday?", answered: false },
+      { id: "q2", from: "Tom Whitfield", team: "Warehouse", when: "Yesterday", visibility: "private",
+        question: "My tax code changed from 1257L to BR on this month's payslip. Can you check it?", answered: false },
+      { id: "q3", from: "Aisha Bello", team: "Customer Service", when: "Today", visibility: "public",
+        question: "Does the evening shift premium apply to Sunday nights as well?", answered: false }
+    ],
+    visibility: "public",
+    open: {},
+    editing: null,
+    answering: null,
+    confirmDelete: null
+  };
+
+  var ids = { faq: 13, inbox: 4 };
+
+  /* Persistence hook. To add it later, save state.faqs and state.inbox here
+     and read them back before the first render, for example with
+     localStorage.setItem("payroll-answers", JSON.stringify({ faqs: state.faqs, inbox: state.inbox })). */
+  function persist() {}
+
+  function el(id) { return document.getElementById(id); }
+
+  function esc(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function options(selected) {
+    return CATEGORIES.map(function (cat) {
+      return '<option value="' + esc(cat) + '"' + (cat === selected ? " selected" : "") + ">" + esc(cat) + "</option>";
+    }).join("");
+  }
+
+  function publishedCount() {
+    return state.faqs.filter(function (f) { return f.published; }).length;
+  }
+
+  function waitingCount() {
+    return state.inbox.filter(function (q) { return !q.answered; }).length;
+  }
+
+  function announce(message) {
+    var node = el("adminStatus");
+    node.textContent = message;
+    node.className = message ? "admin-status is-live" : "admin-status";
+  }
+
+  /* Public FAQ */
+  function renderFaq() {
+    var query = el("faqSearch").value.trim().toLowerCase();
+    var visible = state.faqs.filter(function (f) { return f.published; });
+    var matches = visible.filter(function (f) {
+      if (!query) { return true; }
+      return (f.question + " " + f.answer + " " + f.cat).toLowerCase().indexOf(query) !== -1;
+    });
+
+    var html = "";
+    CATEGORIES.forEach(function (cat, index) {
+      var group = matches.filter(function (f) { return f.cat === cat; });
+      if (!group.length) { return; }
+      html += '<section class="faq-group" aria-labelledby="cat-' + index + '">';
+      html += '<h3 class="cat" id="cat-' + index + '">' + esc(cat) + "</h3>";
+      html += '<div class="qa-set">';
+      group.forEach(function (f) {
+        var open = state.open[f.id] === true;
+        html += '<article class="qa">';
+        html += '<h4 class="qa-h"><button class="qa-btn" type="button" data-qa="' + esc(f.id) + '" aria-expanded="' + open + '" aria-controls="panel-' + esc(f.id) + '" id="head-' + esc(f.id) + '">';
+        html += "<span>" + esc(f.question) + "</span>";
+        html += '<svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 8l5 5 5-5"/></svg>';
+        html += "</button></h4>";
+        html += '<div class="qa-panel" id="panel-' + esc(f.id) + '" role="region" aria-labelledby="head-' + esc(f.id) + '"' + (open ? "" : " hidden") + "><p>" + esc(f.answer) + "</p></div>";
+        html += "</article>";
+      });
+      html += "</div></section>";
+    });
+
+    el("faqList").innerHTML = html;
+    el("faqCount").textContent = visible.length + " answers published";
+    el("bannerText").textContent = visible.length + " answers are already published";
+
+    var empty = el("faqEmpty");
+    empty.hidden = matches.length !== 0;
+    if (matches.length === 0) {
+      el("faqEmptyText").textContent = 'Nothing in the answers matches "' + el("faqSearch").value.trim() + '". Try a shorter word, or ask Emma in the box above.';
+    }
+  }
+
+  /* Admin lists */
+  function renderInbox() {
+    var html = state.inbox.map(function (q) {
+      var meta = esc(q.from) + ", " + esc(q.team) + ". " + (q.visibility === "public" ? "Public" : "Private") + ". " + esc(q.when);
+      html += '<li class="inbox-item' + (q.answered ? " is-answered" : "") + '">';
+      html += '<p class="inbox-q">' + esc(q.question) + "</p>";
+      html += '<p class="inbox-meta">' + meta + "</p>";
+      if (q.answered) {
+        html += '<div class="inbox-actions"><span class="tag">Answered</span><span class="inbox-meta">Moved into the FAQ list below</span></div>';
+      } else if (state.answering === q.id) {
+        html += '<form class="form" data-answer-form="' + esc(q.id) + '">';
+        html += '<label for="ans-' + esc(q.id) + '">Your answer</label>';
+        html += '<textarea id="ans-' + esc(q.id) + '" name="answer" rows="4" required placeholder="Plain workplace wording, no policy claims."></textarea>';
+        html += '<label for="anscat-' + esc(q.id) + '">Category</label>';
+        html += '<select id="anscat-' + esc(q.id) + '" name="category">' + options(CATEGORIES[0]) + "</select>";
+        html += '<label class="check"><input type="checkbox" name="publish"' + (q.visibility === "public" ? " checked" : "") + "> Add this answer to the public FAQ</label>";
+        html += '<div class="form-row"><button class="btn-primary" type="submit">Publish answer</button>';
+        html += '<button class="btn-quiet" type="button" data-cancel="' + esc(q.id) + '">Cancel</button></div>';
+        html += "</form>";
+      } else {
+        html += '<div class="inbox-actions"><button class="btn-primary" type="button" data-answer="' + esc(q.id) + '">Answer</button></div>';
+      }
+      return html + "</li>";
+    }).join("");
+
+    el("inboxList").innerHTML = html || '<li class="inbox-item"><p class="inbox-q">No questions have come in yet.</p></li>';
+    el("pendingCount").textContent = String(waitingCount());
+    el("adminBadge").textContent = String(waitingCount());
+    el("adminBadge").hidden = waitingCount() === 0;
+    el("adminBadgeText").textContent = waitingCount() === 1 ? ", 1 question waiting" : ", " + waitingCount() + " questions waiting";
+  }
+
+  function renderAdminFaq() {
+    var html = state.faqs.map(function (f) {
+      if (state.editing === f.id) {
+        html += '<li class="admin-item"><form class="form" data-edit-form="' + esc(f.id) + '">';
+        html += '<label for="eq-' + esc(f.id) + '">Question</label>';
+        html += '<input id="eq-' + esc(f.id) + '" name="question" type="text" value="' + esc(f.question) + '" required>';
+        html += '<label for="ea-' + esc(f.id) + '">Answer</label>';
+        html += '<textarea id="ea-' + esc(f.id) + '" name="answer" rows="4" required>' + esc(f.answer) + "</textarea>";
+        html += '<label for="ec-' + esc(f.id) + '">Category</label>';
+        html += '<select id="ec-' + esc(f.id) + '" name="category">' + options(f.cat) + "</select>";
+        html += '<div class="form-row"><button class="btn-primary" type="submit">Save changes</button>';
+        html += '<button class="btn-quiet" type="button" data-cancel-edit="' + esc(f.id) + '">Cancel</button></div>';
+        return html + "</form></li>";
+      }
+
+      html += '<li class="admin-item"><div class="admin-item-head"><div>';
+      html += '<p class="admin-q">' + esc(f.question) + "</p>";
+      html += '<p class="admin-meta">' + esc(f.cat) + ". " + (f.published ? "In the public FAQ" : "Hidden from colleagues") + "</p>";
+      html += "</div></div><div class=\"admin-item-actions\">";
+      html += '<button class="btn-quiet" type="button" data-edit="' + esc(f.id) + '">Edit</button>';
+      html += '<button class="switch" type="button" data-toggle="' + esc(f.id) + '" aria-pressed="' + f.published + '"><span class="track" aria-hidden="true"><span class="knob"></span></span>In the public FAQ</button>';
+      if (state.confirmDelete === f.id) {
+        html += '<button class="btn-quiet is-danger" type="button" data-delete="' + esc(f.id) + '">Delete this entry</button>';
+        html += '<button class="btn-quiet" type="button" data-keep="' + esc(f.id) + '">Keep it</button>';
+      } else {
+        html += '<button class="btn-quiet is-danger" type="button" data-ask-delete="' + esc(f.id) + '">Delete</button>';
+      }
+      html += "</div></li>";
+      return html;
+    }).join("");
+
+    el("adminFaqList").innerHTML = html || '<li class="admin-item"><p class="admin-q">No entries yet. Add one above.</p></li>';
+    el("faqAdminCount").textContent = String(state.faqs.length);
+  }
+
+  function renderAll() {
+    renderFaq();
+    renderInbox();
+    renderAdminFaq();
+  }
+
+  /* Ask box */
+  function updateCounter() {
+    el("askCounter").textContent = el("askInput").value.length + " of 400";
+  }
+
+  function setStatus(message, tone) {
+    var node = el("askStatus");
+    node.textContent = message;
+    node.className = tone ? "ask-status " + tone : "ask-status";
+  }
+
+  function sendQuestion() {
+    var text = el("askInput").value.trim();
+    if (!text) {
+      setStatus("Add your question in the box first, then press send.", "is-warn");
+      el("askInput").focus();
+      return;
+    }
+    state.inbox.unshift({
+      id: "q" + ids.inbox++,
+      from: "You",
+      team: "Sent from this page",
+      when: "Just now",
+      visibility: state.visibility,
+      question: text,
+      answered: false
+    });
+    el("askInput").value = "";
+    updateCounter();
+    persist();
+    renderInbox();
+    setStatus(
+      state.visibility === "public"
+        ? "Sent to Emma. A public question can be added to the FAQ once she has answered it."
+        : "Sent to Emma privately. It stays between you and Emma and is not added to the FAQ.",
+      "is-ok"
+    );
+  }
+
+  /* Admin open and close */
+  var lastFocus = null;
+
+  function openAdmin() {
+    lastFocus = document.activeElement;
+    el("scrim").hidden = false;
+    el("admin").hidden = false;
+    document.body.style.overflow = "hidden";
+    renderInbox();
+    renderAdminFaq();
+    el("adminClose").focus();
+  }
+
+  function closeAdmin() {
+    el("admin").hidden = true;
+    el("scrim").hidden = true;
+    document.body.style.overflow = "";
+    announce("");
+    state.editing = null;
+    state.answering = null;
+    state.confirmDelete = null;
+    if (lastFocus && typeof lastFocus.focus === "function") { lastFocus.focus(); }
+    renderAll();
+  }
+
+  /* Wiring */
+  function calmScroll() {
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return "auto";
+    }
+    return "smooth";
+  }
+
+  el("bannerBtn").addEventListener("click", function () {
+    el("faq").scrollIntoView({ behavior: calmScroll(), block: "start" });
+    el("faqSearch").focus({ preventScroll: true });
+  });
+
+  el("adminBtn").addEventListener("click", openAdmin);
+  el("adminClose").addEventListener("click", closeAdmin);
+  el("scrim").addEventListener("click", closeAdmin);
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && !el("admin").hidden) { closeAdmin(); }
+  });
+
+  el("askInput").addEventListener("input", updateCounter);
+  el("sendBtn").addEventListener("click", sendQuestion);
+
+  Array.prototype.forEach.call(document.querySelectorAll(".vis-toggle button"), function (button) {
+    button.addEventListener("click", function () {
+      state.visibility = button.getAttribute("data-vis");
+      Array.prototype.forEach.call(document.querySelectorAll(".vis-toggle button"), function (other) {
+        other.setAttribute("aria-pressed", String(other === button));
+      });
+      setStatus("", "");
+    });
+  });
+
+  el("faqSearch").addEventListener("input", renderFaq);
+  el("emptyClear").addEventListener("click", function () {
+    el("faqSearch").value = "";
+    renderFaq();
+    el("faqSearch").focus();
+  });
+
+  el("faqList").addEventListener("click", function (event) {
+    var button = event.target.closest(".qa-btn");
+    if (!button) { return; }
+    var id = button.getAttribute("data-qa");
+    var open = state.open[id] !== true;
+    state.open[id] = open;
+    button.setAttribute("aria-expanded", String(open));
+    var panel = el("panel-" + id);
+    if (panel) { panel.hidden = !open; }
+  });
+
+  /* Admin actions */
+  el("admin").addEventListener("click", function (event) {
+    var target = event.target;
+    var answer = target.closest("[data-answer]");
+    var cancel = target.closest("[data-cancel]");
+    var edit = target.closest("[data-edit]");
+    var cancelEdit = target.closest("[data-cancel-edit]");
+    var toggle = target.closest("[data-toggle]");
+    var askDelete = target.closest("[data-ask-delete]");
+    var remove = target.closest("[data-delete]");
+    var keep = target.closest("[data-keep]");
+    var id;
+
+    if (answer) {
+      state.answering = answer.getAttribute("data-answer");
+      renderInbox();
+      var field = el("ans-" + state.answering);
+      if (field) { field.focus(); }
+      return;
+    }
+    if (cancel) {
+      state.answering = null;
+      renderInbox();
+      return;
+    }
+    if (edit) {
+      state.editing = edit.getAttribute("data-edit");
+      state.confirmDelete = null;
+      renderAdminFaq();
+      var q = el("eq-" + state.editing);
+      if (q) { q.focus(); }
+      return;
+    }
+    if (cancelEdit) {
+      state.editing = null;
+      renderAdminFaq();
+      return;
+    }
+    if (toggle) {
+      id = toggle.getAttribute("data-toggle");
+      state.faqs.forEach(function (f) {
+        if (f.id === id) {
+          f.published = !f.published;
+          announce(f.published ? "Entry is now in the public FAQ." : "Entry is now hidden from colleagues.");
+        }
+      });
+      persist();
+      renderAll();
+      return;
+    }
+    if (askDelete) {
+      state.confirmDelete = askDelete.getAttribute("data-ask-delete");
+      renderAdminFaq();
+      return;
+    }
+    if (keep) {
+      state.confirmDelete = null;
+      renderAdminFaq();
+      return;
+    }
+    if (remove) {
+      id = remove.getAttribute("data-delete");
+      state.faqs = state.faqs.filter(function (f) { return f.id !== id; });
+      state.confirmDelete = null;
+      persist();
+      announce("Entry deleted.");
+      renderAll();
+    }
+  });
+
+  el("admin").addEventListener("submit", function (event) {
+    var form = event.target;
+    event.preventDefault();
+
+    if (form.hasAttribute("data-answer-form")) {
+      var id = form.getAttribute("data-answer-form");
+      var text = form.elements.answer.value.trim();
+      var cat = form.elements.category.value;
+      var publish = form.elements.publish.checked;
+      if (!text) { announce("Write the answer before publishing it."); return; }
+      var item = null;
+      state.inbox.forEach(function (q) { if (q.id === id) { item = q; } });
+      if (item) { item.answered = true; }
+      state.faqs.unshift({
+        id: "f" + ids.faq++,
+        cat: cat,
+        published: publish,
+        question: item ? item.question : "Answered question",
+        answer: text
+      });
+      state.answering = null;
+      persist();
+      announce(publish ? "Answer published and added to the FAQ." : "Answer saved. The FAQ entry is hidden from colleagues.");
+      renderAll();
+      return;
+    }
+
+    if (form.hasAttribute("data-edit-form")) {
+      var editId = form.getAttribute("data-edit-form");
+      var question = form.elements.question.value.trim();
+      var answerText = form.elements.answer.value.trim();
+      if (!question || !answerText) { announce("A question and an answer are both needed."); return; }
+      state.faqs.forEach(function (f) {
+        if (f.id === editId) {
+          f.question = question;
+          f.answer = answerText;
+          f.cat = form.elements.category.value;
+        }
+      });
+      state.editing = null;
+      persist();
+      announce("Changes saved. The public FAQ has been updated.");
+      renderAll();
+      return;
+    }
+
+    if (form.id === "addForm") {
+      var newQ = el("addQ").value.trim();
+      var newA = el("addA").value.trim();
+      if (!newQ || !newA) { announce("A question and an answer are both needed."); return; }
+      state.faqs.unshift({
+        id: "f" + ids.faq++,
+        cat: el("addCat").value,
+        published: el("addPub").checked,
+        question: newQ,
+        answer: newA
+      });
+      form.reset();
+      el("addPub").checked = true;
+      persist();
+      announce("Entry added. It is in the list below.");
+      renderAll();
+    }
+  });
+
+  /* Seed the category pickers and draw the page. */
+  el("addCat").innerHTML = options(CATEGORIES[0]);
+  updateCounter();
+  renderAll();
+})();
+</script>
+</body>
+</html>

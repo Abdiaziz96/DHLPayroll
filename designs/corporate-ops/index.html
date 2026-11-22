@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payroll Answers | DHL internal tool</title>
+<meta name="description" content="Ask a payroll question or find a common answer. Internal tool for DHL colleagues.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --red:#D40511;
+    --red-dark:#A60310;
+    --red-tint:#FCEDEE;
+    --ink:#14181C;
+    --ink-2:#39414A;
+    --muted:#616B76;
+    --line:#DCE1E6;
+    --line-soft:#EDF0F2;
+    --surface:#FFFFFF;
+    --page:#F3F5F7;
+    --ok:#0B5B32;
+    --ok-tint:#E9F4EE;
+    --ok-line:#C4E0D0;
+    --warn-tint:#FFF6E5;
+    --warn-line:#EBD9AE;
+    --font:'Inter','Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+    --bar-h:52px;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--page);color:var(--ink);font:400 14px/1.55 var(--font);-webkit-font-smoothing:antialiased}
+  h1,h2,h3{margin:0;letter-spacing:-0.01em}
+  p{margin:0}
+  [hidden]{display:none!important}
+  :focus-visible{outline:2px solid var(--red);outline-offset:2px}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+  .skip{position:absolute;left:-9999px;top:0}
+  .skip:focus{left:12px;top:10px;z-index:60;background:var(--surface);padding:8px 12px;border:1px solid var(--red);border-radius:4px;font-size:13px}
+
+  /* Top bar */
+  .topbar{position:sticky;top:0;z-index:30;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:8px 16px;min-height:var(--bar-h);background:var(--surface);border-bottom:1px solid var(--line)}
+  .mark{width:22px;height:22px;flex:none;background:var(--red);border-radius:2px;position:relative}
+  .mark::after{content:"";position:absolute;top:0;right:0;bottom:0;left:0;background:linear-gradient(118deg,transparent 40%,#fff 40%,#fff 56%,transparent 56%)}
+  .brand{font-size:14.5px;font-weight:600;letter-spacing:-0.01em;white-space:nowrap}
+  .brand-sub{margin-left:6px;font-size:12.5px;font-weight:400;color:var(--muted)}
+  .search{flex:1 1 220px;max-width:380px;margin-left:auto}
+  .search input[type="search"]{width:100%;padding:7px 10px;font-size:13.5px}
+  .search input[type="search"]:hover{border-color:#C3CAD1}
+
+  /* Buttons and fields */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 14px;border:1px solid transparent;border-radius:4px;background:none;font-size:13.5px;font-weight:600;line-height:1.2;transition:background-color .12s ease,border-color .12s ease,color .12s ease}
+  .btn-primary{background:var(--red);border-color:var(--red);color:#fff}
+  .btn-primary:hover{background:var(--red-dark);border-color:var(--red-dark)}
+  .btn-ghost{background:var(--surface);border-color:var(--line);color:var(--ink-2);font-weight:500}
+  .btn-ghost:hover{border-color:#B9C1C9;background:#FAFBFC}
+  .btn-danger{background:var(--surface);border-color:#E7B7BB;color:var(--red);font-weight:500}
+  .btn-danger:hover{background:var(--red-tint)}
+  .btn-sm{padding:5px 10px;font-size:13px}
+  .btn[aria-pressed="true"]{border-color:var(--red);background:var(--red-tint);color:var(--red)}
+  textarea,input[type="text"],input[type="search"],select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:4px;background:var(--surface);font:inherit;color:var(--ink)}
+  textarea{min-height:72px;resize:vertical;line-height:1.5}
+  textarea::placeholder,input::placeholder{color:#8A939C}
+  .field{display:flex;flex-direction:column;gap:4px}
+  .field label{font-size:12.5px;font-weight:600;color:var(--ink-2)}
+  .field-row{display:flex;flex-wrap:wrap;gap:12px}
+  .field-grow{flex:1 1 260px}
+  .check{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--ink-2)}
+  .check input{margin:3px 0 0}
+  .form-foot{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+  .error{margin:0;font-size:13px;font-weight:500;color:var(--red)}
+  .ok-msg{margin:0;font-size:13px;font-weight:500;color:var(--ok)}
+
+  /* Layout */
+  .shell{max-width:1160px;margin:0 auto;padding:24px 16px 56px;display:grid;grid-template-columns:216px minmax(0,1fr);gap:32px;align-items:start}
+  .shell[data-view="admin"]{grid-template-columns:minmax(0,1fr)}
+  .shell[data-view="admin"] .sidebar{display:none}
+  .sidebar{position:sticky;top:calc(var(--bar-h) + 20px)}
+  .side-title{margin:0 0 8px 8px;font-size:12.5px;font-weight:600;color:var(--muted)}
+  .side-nav{display:flex;flex-direction:column;gap:2px}
+  .side-item{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;padding:7px 8px;border:0;border-radius:4px;background:none;color:var(--ink-2);font-size:13.5px;text-align:left}
+  .side-item:hover{background:#E9ECEF}
+  .side-item .n{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .side-item[aria-pressed="true"]{background:var(--red-tint);color:var(--red);font-weight:600;box-shadow:inset 2px 0 0 var(--red)}
+  .side-item[aria-pressed="true"] .n{color:var(--red)}
+  .main{min-width:0}
+  h1{font-size:clamp(28px,3.4vw,34px);line-height:1.08;font-weight:600}
+  .lede{margin-top:8px;max-width:68ch;color:var(--muted)}
+  .count{margin-top:12px;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .count strong{font-weight:600;color:var(--ink)}
+
+  /* Ask card */
+  .ask{margin:20px 0 28px;padding:16px;background:var(--surface);border:1px solid #C9D0D7;border-radius:4px}
+  .ask-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+  .ask-label{font-size:14px;font-weight:600}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+  .seg label{display:inline-flex;cursor:pointer}
+  .seg input{position:absolute;width:1px;height:1px;opacity:0}
+  .seg span{padding:5px 12px;background:var(--surface);color:var(--ink-2);font-size:13px}
+  .seg input:checked+span{background:var(--ink);color:#fff}
+  .seg input:focus-visible+span{outline:2px solid var(--red);outline-offset:-2px}
+  .hint{margin-top:8px;font-size:12.5px;color:var(--muted)}
+  .ask-foot{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:12px}
+  .ask-note{font-size:12.5px;color:var(--muted)}
+  .confirm{margin-top:12px;padding:10px 12px;border:1px solid var(--ok-line);border-radius:4px;background:var(--ok-tint);color:var(--ok);font-size:13.5px}
+  .confirm-warn{border-color:#E7B7BB;background:var(--red-tint);color:var(--red)}
+  /* FAQ list */
+  .sec-head{margin-bottom:8px}
+  h2{font-size:16px;font-weight:600}
+  .note{margin-top:6px;max-width:80ch;font-size:12.5px;color:var(--muted)}
+  .faq-list{margin-top:12px;border-top:1px solid var(--line)}
+  .faq-row{border-bottom:1px solid var(--line-soft)}
+  .faq-head{display:grid;grid-template-columns:136px minmax(0,1fr) 16px;gap:16px;align-items:start;width:100%;padding:13px 4px;border:0;background:none;text-align:left}
+  .faq-q{font-size:14px;font-weight:500;color:var(--ink)}
+  .faq-head:hover .faq-q{color:var(--red)}
+  .faq-head[aria-expanded="true"] .faq-q{color:var(--ink);font-weight:600}
+  .chip{display:inline-block;justify-self:start;padding:2px 7px;border:1px solid var(--line);border-radius:3px;background:var(--page);color:var(--ink-2);font-size:12px;white-space:nowrap}
+  .chev{width:8px;height:8px;margin-top:5px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:rotate(-45deg);transition:transform .15s ease}
+  .faq-head[aria-expanded="true"] .chev{border-color:var(--red);transform:rotate(45deg)}
+  .faq-body{padding:0 4px 16px 152px}
+  .faq-body p{max-width:76ch;color:var(--ink-2)}
+  .empty{margin-top:16px;padding:16px;border:1px dashed var(--line);border-radius:4px;color:var(--muted);font-size:13.5px}
+  .link-btn{padding:0;border:0;background:none;color:var(--red);font-size:13.5px;font-weight:600;text-decoration:underline}
+
+  /* Admin */
+  .admin-head{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+  .panel{margin-top:24px;border:1px solid var(--line);border-radius:4px;background:var(--surface)}
+  .panel-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 12px;padding:12px 16px;border-bottom:1px solid var(--line-soft)}
+  .panel-head h3{font-size:14px;font-weight:600}
+  .meta{font-size:12.5px;color:var(--muted)}
+  .adm-item{padding:14px 16px;border-bottom:1px solid var(--line-soft)}
+  .adm-item:last-child{border-bottom:0}
+  .adm-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px}
+  .adm-q{flex:1 1 260px;font-size:14px;font-weight:500}
+  .state{padding:2px 7px;border:1px solid;border-radius:3px;font-size:12px;font-weight:600}
+  .state-live{border-color:var(--ok-line);background:var(--ok-tint);color:var(--ok)}
+  .state-draft{border-color:var(--line);background:var(--page);color:var(--ink-2)}
+  .chip-wait{border-color:var(--warn-line);background:var(--warn-tint);color:#8A5B00}
+  .chip-done{border-color:var(--ok-line);background:var(--ok-tint);color:var(--ok)}
+  .adm-answer{margin-top:8px;padding:10px 12px;border-radius:4px;background:var(--page);color:var(--ink-2);font-size:13.5px}
+  .adm-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px}
+  .adm-form{display:flex;flex-direction:column;gap:10px;margin-top:12px;padding:12px;border-radius:4px;background:var(--page)}
+  #addForm{display:flex;flex-direction:column;gap:12px;padding:16px}
+  .foot{padding:16px;border-top:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:12.5px;text-align:center}
+
+  @media (max-width:900px){
+    .shell{grid-template-columns:minmax(0,1fr);gap:20px;padding:20px 16px 40px}
+    .sidebar{position:static}
+    .side-title{margin-left:0}
+    .side-nav{flex-direction:row;flex-wrap:wrap;gap:6px}
+    .side-item{width:auto;padding:6px 10px;border:1px solid var(--line);background:var(--surface)}
+    .side-item[aria-pressed="true"]{box-shadow:none}
+    .faq-body{padding-left:4px}
+  }
+  @media (max-width:640px){
+    .search{order:3;flex-basis:100%;max-width:none;margin-left:0}
+    .faq-head{grid-template-columns:minmax(0,1fr) 16px;gap:6px}
+    .faq-head .chip{grid-column:1;grid-row:1}
+    .faq-q{grid-column:1;grid-row:2;padding-right:8px}
+    .chev{grid-column:2;grid-row:1}
+    .adm-item{padding:12px}
+    .panel-head{padding:12px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{transition:none!important;animation:none!important}
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#faqHeading">Skip to answers</a>
+
+<header class="topbar">
+  <span class="mark" aria-hidden="true"></span>
+  <span class="brand">Payroll Answers<span class="brand-sub">DHL internal</span></span>
+  <div class="search">
+    <label class="sr-only" for="searchInput">Search payroll answers</label>
+    <input id="searchInput" type="search" placeholder="Search payroll answers" autocomplete="off">
+  </div>
+  <button class="btn btn-ghost" id="adminBtn" type="button" aria-pressed="false">Admin</button>
+</header>
+
+<div class="shell" id="shell" data-view="public">
+  <aside class="sidebar" aria-labelledby="catTitle">
+    <p class="side-title" id="catTitle">Categories</p>
+    <nav class="side-nav" id="sideNav" aria-label="Filter answers by category"></nav>
+  </aside>
+
+  <main class="main" id="main">
+    <section id="publicView" aria-labelledby="pageTitle">
+      <h1 id="pageTitle">Payroll answers</h1>
+      <p class="lede">Ask Emma a pay question, or check whether it is already answered below. Emma adds the good ones to this page so nobody has to ask twice.</p>
+      <p class="count" id="resultCount"><strong>12</strong> answers</p>
+
+      <form class="ask" id="askForm" novalidate>
+        <div class="ask-top">
+          <label class="ask-label" for="askText">Ask a payroll question</label>
+          <div class="seg" role="radiogroup" aria-label="Who can see this question">
+            <label><input type="radio" name="visibility" value="public" checked><span>Public</span></label>
+            <label><input type="radio" name="visibility" value="private"><span>Private</span></label>
+          </div>
+        </div>
+        <textarea id="askText" name="askText" rows="3" placeholder="Ask a payroll question, for example about a missing payment, a shift allowance or a deduction you do not recognise"></textarea>
+        <p class="hint" id="askHint">Public: your question and the answer may be added to the FAQ so everyone can find it.</p>
+        <div class="ask-foot">
+          <button class="btn btn-primary" type="submit">Send to Emma</button>
+          <span class="ask-note">Template only: nothing is sent and nothing is stored.</span>
+        </div>
+        <p class="confirm" id="askConfirm" role="status" hidden></p>
+      </form>
+
+      <section aria-labelledby="faqHeading">
+        <div class="sec-head">
+          <h2 id="faqHeading">Common questions</h2>
+          <p class="note">General answers only. Pay dates, cut-off times and rates below are placeholder examples, and Emma confirms anything specific to your contract or country.</p>
+        </div>
+        <div class="faq-list" id="faqList"></div>
+        <p class="empty" id="faqEmpty" hidden>No answers match that search. <button class="link-btn" type="button" id="clearFilters">Show all answers</button></p>
+      </section>
+    </section>
+
+    <section id="adminView" aria-labelledby="adminTitle" hidden>
+      <div class="admin-head">
+        <div>
+          <h2 id="adminTitle">Admin</h2>
+          <p class="lede">Answer colleague questions and keep the FAQ current. Anything you change here shows on the public page straight away.</p>
+        </div>
+        <button class="btn btn-ghost" id="closeAdmin" type="button">Back to public page</button>
+      </div>
+
+      <section class="panel" aria-labelledby="pendingHeading">
+        <div class="panel-head">
+          <h3 id="pendingHeading">Pending questions</h3>
+          <span class="meta" id="pendingCount"></span>
+        </div>
+        <div id="pendingList"></div>
+      </section>
+
+      <section class="panel" aria-labelledby="entriesHeading">
+        <div class="panel-head">
+          <h3 id="entriesHeading">FAQ entries</h3>
+          <span class="meta" id="entriesCount"></span>
+        </div>
+        <div id="adminList"></div>
+      </section>
+
+      <section class="panel" aria-labelledby="addHeading">
+        <div class="panel-head">
+          <h3 id="addHeading">Add an FAQ entry</h3>
+          <span class="meta">Published as soon as you add it</span>
+        </div>
+        <form id="addForm" novalidate>
+          <div class="field-row">
+            <div class="field">
+              <label for="addCategory">Category</label>
+              <select id="addCategory" name="category"></select>
+            </div>
+            <div class="field field-grow">
+              <label for="addQuestion">Question</label>
+              <input id="addQuestion" name="question" type="text" placeholder="How is a shift allowance worked out?">
+            </div>
+          </div>
+          <div class="field">
+            <label for="addAnswer">Answer</label>
+            <textarea id="addAnswer" name="answer" rows="3" placeholder="Write the answer in plain language and mark any example figure as an example."></textarea>
+          </div>
+          <div class="form-foot">
+            <button class="btn btn-primary" type="submit">Add to FAQ</button>
+            <p class="error" id="addError" role="alert" hidden></p>
+            <p class="ok-msg" id="addOk" role="status" hidden></p>
+          </div>
+        </form>
+      </section>
+    </section>
+  </main>
+</div>
+
+<footer class="foot">
+  <p>Payroll Answers is an internal tool for DHL colleagues. General answers only, it does not replace an official policy statement.</p>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  var CATEGORIES = ['Pay dates', 'Overtime and shift pay', 'Deductions and tax', 'Leave and absence'];
+
+  // One store feeds both views. Swap persist() for localStorage or an API call later.
+  var state = {
+    view: 'public',
+    query: '',
+    category: 'all',
+    open: {},
+    editingId: null,
+    answeringId: null,
+    confirmId: null,
+    ref: 1041,
+    faq: [
+      { id: 'f1', category: 'Pay dates', published: true,
+        q: 'When do I get paid each month?',
+        a: 'Payday is the last working day of the month for most colleagues. In the example pay calendar this is shown as the 28th, and where that falls on a weekend the payment arrives on the working day before. Your own pay date is printed at the top of your payslip.' },
+      { id: 'f2', category: 'Pay dates', published: true,
+        q: 'What time does the money reach my bank account?',
+        a: 'Payments are released to the banks in the morning, and most accounts show the money by early afternoon on payday. Some banks hold incoming payments until the next working day. If nothing has arrived by the evening of payday, send a private question with your employee number.' },
+      { id: 'f3', category: 'Pay dates', published: true,
+        q: 'My pay has not arrived. What should I do?',
+        a: 'Check that the bank details we hold are correct, then send a private question to Emma with your employee number and the pay period. Missing payments are usually a bank detail mismatch or a starter record that was set up late. Please do not put bank details in a public question.' },
+      { id: 'f4', category: 'Overtime and shift pay', published: true,
+        q: 'How is overtime calculated?',
+        a: 'Overtime is paid at the rate in your contract. The example rate used in this FAQ is 1.25 times your hourly rate for weekday hours. Only approved hours count, so make sure your manager approves the time in the system, and note that weekend and public holiday rates can be different.' },
+      { id: 'f5', category: 'Overtime and shift pay', published: true,
+        q: 'Do night shifts carry an extra payment?',
+        a: 'Many shift patterns include a night allowance on top of the base rate. The example figure here is 15 per cent for hours worked between 22:00 and 06:00. Whether it applies to you depends on your contract and your site agreement, so Emma can confirm your case.' },
+      { id: 'f6', category: 'Overtime and shift pay', published: true,
+        q: 'Who approves overtime before I work it?',
+        a: 'Your line manager approves overtime in advance in the time system. Hours added after the pay cut-off move to the next pay run. If approved overtime is missing from your payslip, send a private question with the dates and the approval reference.' },
+      { id: 'f7', category: 'Deductions and tax', published: true,
+        q: 'Why is my net pay lower than last month?',
+        a: 'The usual causes are a change of tax code, a benefit that started or stopped, or a correction to an earlier overpayment. Every deduction on your payslip has a short description next to it. If a line is unclear, send a private question quoting the deduction code.' },
+      { id: 'f8', category: 'Deductions and tax', published: true,
+        q: 'How do I change my bank account details?',
+        a: 'Bank details are changed in the employee self service portal under Personal details, and the change applies from the next pay run. Emma cannot take bank details by email or chat. Update them before the pay cut-off in the example calendar, which is the 15th of the month.' },
+      { id: 'f9', category: 'Deductions and tax', published: true,
+        q: 'Where can I find my payslip?',
+        a: 'Payslips are published in the employee portal on payday and stay available for the current tax year. Older payslips are requested through Emma. If you cannot sign in to the portal, contact the IT service desk first, because payroll cannot reset portal access.' },
+      { id: 'f10', category: 'Leave and absence', published: true,
+        q: 'How is holiday pay worked out?',
+        a: 'Holiday pay follows your normal rate for the days you take as leave, so a week of leave should match a normal working week. Colleagues on variable hours are usually paid an average of recent weeks. The averaging period in the example policy is 12 weeks.' },
+      { id: 'f11', category: 'Leave and absence', published: true,
+        q: 'What happens to my pay when I am off sick?',
+        a: 'Sick pay depends on your contract and on how long you are absent. Company sick pay and any statutory element appear as separate lines on your payslip. Report the absence in the time system on the first day so the absence team can process it.' },
+      { id: 'f12', category: 'Leave and absence', published: true,
+        q: 'Does unpaid leave change my pay date?',
+        a: 'No, the pay date stays the same, but the amount is reduced for the unpaid days in that period. Unpaid leave taken after the cut-off is deducted in the following month. The cut-off used in the example calendar is the 15th.' }
+    ],
+    pending: [
+      { id: 'q1', text: 'I started on the 18th. Do I get a part payment this month, or does it wait for next month?', from: 'New starter, Finance Ops', when: '2 days ago', visibility: 'public', answer: '', category: 'Pay dates', faqId: null },
+      { id: 'q2', text: 'My payslip shows a deduction called SHIFTADJ that I do not recognise.', from: 'Warehouse, late shift', when: 'yesterday', visibility: 'private', answer: '', category: 'Deductions and tax', faqId: null },
+      { id: 'q3', text: 'Can I split my holiday pay across two pay periods?', from: 'Customer Service', when: '4 hours ago', visibility: 'public', answer: '', category: 'Leave and absence', faqId: null },
+      { id: 'q4', text: 'I changed my bank account last week. Is it too late for this month?', from: 'Operations', when: 'today, 08:40', visibility: 'private', answer: 'The change applies from the next pay run, so this month still goes to the old account. Update the details in the portal today and send me a private note if the old account is closed.', category: 'Pay dates', faqId: null }
+    ]
+  };
+
+  function byId(id) { return document.getElementById(id); }
+
+  function esc(value) {
+    return String(value).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function persist() {
+    // Storage hook. Replace the body with localStorage or a POST to the payroll API.
+  }
+
+  function matchesQuery(item) {
+    if (!state.query) return true;
+    return (item.q + ' ' + item.a + ' ' + item.category).toLowerCase().indexOf(state.query) !== -1;
+  }
+
+  function publishedMatching() {
+    return state.faq.filter(function (f) { return f.published && matchesQuery(f); });
+  }
+
+  function categoryOptions(selected) {
+    return CATEGORIES.map(function (c) {
+      return '<option value="' + esc(c) + '"' + (c === selected ? ' selected' : '') + '>' + esc(c) + '</option>';
+    }).join('');
+  }
+
+  function focusFirst(scope, selector) {
+    if (!scope) return;
+    var el = scope.querySelector(selector || 'input, textarea, select, button');
+    if (el) el.focus();
+  }
+
+  function render() {
+    renderSidebar();
+    renderFaq();
+    renderPending();
+    renderAdminList();
+  }
+
+  function sideItem(value, label, count) {
+    var on = state.category === value;
+    return '<button type="button" class="side-item" data-cat="' + esc(value) + '" aria-pressed="' + on + '">' +
+      '<span>' + esc(label) + '</span><span class="n">' + count + '</span></button>';
+  }
+
+  function renderSidebar() {
+    var pool = publishedMatching();
+    var counts = {};
+    CATEGORIES.forEach(function (c) { counts[c] = 0; });
+    pool.forEach(function (f) { counts[f.category] = (counts[f.category] || 0) + 1; });
+    var html = sideItem('all', 'All answers', pool.length);
+    CATEGORIES.forEach(function (c) { html += sideItem(c, c, counts[c]); });
+    byId('sideNav').innerHTML = html;
+  }
+
+  function renderFaq() {
+    var pool = publishedMatching();
+    if (state.category !== 'all') {
+      pool = pool.filter(function (f) { return f.category === state.category; });
+    }
+    var totalPublished = state.faq.filter(function (f) { return f.published; }).length;
+    var filtered = Boolean(state.query) || state.category !== 'all';
+    byId('resultCount').innerHTML = filtered
+      ? '<strong>' + pool.length + '</strong> of ' + totalPublished + ' answers'
+      : '<strong>' + totalPublished + '</strong> answers';
+
+    var list = byId('faqList');
+    if (!pool.length) {
+      list.innerHTML = '';
+      byId('faqEmpty').hidden = false;
+      return;
+    }
+    byId('faqEmpty').hidden = true;
+    list.innerHTML = pool.map(function (f) {
+      var open = Boolean(state.open[f.id]);
+      return '<article class="faq-row">' +
+        '<button type="button" class="faq-head" data-id="' + f.id + '" aria-expanded="' + open + '" aria-controls="body-' + f.id + '">' +
+          '<span class="chip">' + esc(f.category) + '</span>' +
+          '<span class="faq-q">' + esc(f.q) + '</span>' +
+          '<span class="chev" aria-hidden="true"></span>' +
+        '</button>' +
+        '<div class="faq-body" id="body-' + f.id + '"' + (open ? '' : ' hidden') + '><p>' + esc(f.a) + '</p></div>' +
+      '</article>';
+    }).join('');
+  }
+
+  function renderPending() {
+    var waiting = state.pending.filter(function (p) { return !p.answer; }).length;
+    byId('pendingCount').textContent = waiting + ' waiting, ' + (state.pending.length - waiting) + ' answered';
+
+    byId('pendingList').innerHTML = state.pending.map(function (p) {
+      var answered = Boolean(p.answer);
+      var editing = state.answeringId === p.id;
+      var html = '<article class="adm-item">' +
+        '<div class="adm-row">' +
+          '<p class="adm-q">' + esc(p.text) + '</p>' +
+          '<span class="chip ' + (answered ? 'chip-done' : 'chip-wait') + '">' + (answered ? 'Answered' : 'Waiting') + '</span>' +
+        '</div>' +
+        '<p class="meta">From ' + esc(p.from) + ', asked ' + esc(p.when) + ', ' + esc(p.visibility) + ' question</p>';
+
+      if (answered && !editing) {
+        html += '<p class="adm-answer">' + esc(p.answer) + '</p>';
+      }
+      if (editing) {
+        html += '<form class="adm-form" data-id="' + p.id + '">' +
+          '<div class="field"><label for="ans-' + p.id + '">Your answer</label>' +
+            '<textarea id="ans-' + p.id + '" name="answer" rows="3">' + esc(p.answer) + '</textarea></div>' +
+          '<label class="check"><input type="checkbox" name="publish"' + (p.faqId ? ' checked' : '') + '>' +
+            '<span>Add this answer to the FAQ so everyone can find it</span></label>' +
+          '<div class="field"><label for="cat-' + p.id + '">FAQ category</label>' +
+            '<select id="cat-' + p.id + '" name="category">' + categoryOptions(p.category) + '</select></div>' +
+          '<div class="form-foot">' +
+            '<button class="btn btn-primary btn-sm" type="submit">' + (answered ? 'Save changes' : 'Send answer') + '</button>' +
+            '<button class="btn btn-ghost btn-sm" type="button" data-act="cancel-answer">Cancel</button>' +
+          '</div>' +
+        '</form>';
+      } else {
+        html += '<div class="adm-actions">' +
+          '<button class="btn btn-ghost btn-sm" type="button" data-act="answer" data-id="' + p.id + '">' +
+            (answered ? 'Edit answer' : 'Answer') + '</button>' +
+        '</div>';
+      }
+      return html + '</article>';
+    }).join('');
+  }
+
+  function renderAdminList() {
+    var pool = state.faq.filter(matchesQuery);
+    byId('entriesCount').textContent = pool.length + ' of ' + state.faq.length + ' entries';
+    if (!pool.length) {
+      byId('adminList').innerHTML = '<p class="empty" style="margin:16px">No FAQ entries match the search.</p>';
+      return;
+    }
+    byId('adminList').innerHTML = pool.map(function (f) {
+      var editing = state.editingId === f.id;
+      var confirming = state.confirmId === f.id;
+      var html = '<article class="adm-item">' +
+        '<div class="adm-row">' +
+          '<span class="chip">' + esc(f.category) + '</span>' +
+          '<p class="adm-q">' + esc(f.q) + '</p>' +
+          '<span class="state ' + (f.published ? 'state-live' : 'state-draft') + '">' +
+            (f.published ? 'Published' : 'Unpublished') + '</span>' +
+        '</div>';
+
+      if (editing) {
+        html += '<form class="adm-form" data-id="' + f.id + '">' +
+          '<div class="field"><label for="eq-' + f.id + '">Question</label>' +
+            '<input id="eq-' + f.id + '" name="question" type="text" value="' + esc(f.q) + '"></div>' +
+          '<div class="field"><label for="ec-' + f.id + '">Category</label>' +
+            '<select id="ec-' + f.id + '" name="category">' + categoryOptions(f.category) + '</select></div>' +
+          '<div class="field"><label for="ea-' + f.id + '">Answer</label>' +
+            '<textarea id="ea-' + f.id + '" name="answer" rows="4">' + esc(f.a) + '</textarea></div>' +
+          '<div class="form-foot">' +
+            '<button class="btn btn-primary btn-sm" type="submit">Save changes</button>' +
+            '<button class="btn btn-ghost btn-sm" type="button" data-act="cancel-edit">Cancel</button>' +
+          '</div>' +
+        '</form>';
+      } else if (confirming) {
+        html += '<div class="adm-actions">' +
+          '<p class="meta">Remove this entry from the FAQ?</p>' +
+          '<button class="btn btn-danger btn-sm" type="button" data-act="confirm-delete" data-id="' + f.id + '">Remove entry</button>' +
+          '<button class="btn btn-ghost btn-sm" type="button" data-act="cancel-delete">Keep it</button>' +
+        '</div>';
+      } else {
+        html += '<div class="adm-actions">' +
+          '<button class="btn btn-ghost btn-sm" type="button" data-act="toggle-publish" data-id="' + f.id + '">' +
+            (f.published ? 'Unpublish' : 'Publish') + '</button>' +
+          '<button class="btn btn-ghost btn-sm" type="button" data-act="edit" data-id="' + f.id + '">Edit</button>' +
+          '<button class="btn btn-ghost btn-sm" type="button" data-act="delete" data-id="' + f.id + '">Delete</button>' +
+        '</div>';
+      }
+      return html + '</article>';
+    }).join('');
+  }
+
+  function setView(view) {
+    state.view = view;
+    byId('shell').setAttribute('data-view', view);
+    byId('publicView').hidden = view !== 'public';
+    byId('adminView').hidden = view !== 'admin';
+    byId('adminBtn').setAttribute('aria-pressed', view === 'admin' ? 'true' : 'false');
+    if (view === 'admin') {
+      byId('adminTitle').setAttribute('tabindex', '-1');
+      byId('adminTitle').focus();
+    } else {
+      byId('pageTitle').setAttribute('tabindex', '-1');
+      byId('pageTitle').focus();
+    }
+  }
+
+  function updateHint() {
+    var chosen = document.querySelector('input[name="visibility"]:checked');
+    var isPublic = !chosen || chosen.value === 'public';
+    byId('askHint').textContent = isPublic
+      ? 'Public: your question and the answer may be added to the FAQ so everyone can find it.'
+      : 'Private: only Emma sees this question.';
+  }
+
+  function findFaq(id) {
+    return state.faq.filter(function (f) { return f.id === id; })[0];
+  }
+
+  byId('adminBtn').addEventListener('click', function () {
+    setView(state.view === 'admin' ? 'public' : 'admin');
+  });
+
+  byId('closeAdmin').addEventListener('click', function () {
+    setView('public');
+  });
+
+  byId('sideNav').addEventListener('click', function (event) {
+    var btn = event.target.closest('.side-item');
+    if (!btn) return;
+    var cat = btn.getAttribute('data-cat');
+    state.category = (cat === 'all' || cat === state.category) ? 'all' : cat;
+    render();
+  });
+
+  byId('faqList').addEventListener('click', function (event) {
+    var head = event.target.closest('.faq-head');
+    if (!head) return;
+    var id = head.getAttribute('data-id');
+    if (state.open[id]) { delete state.open[id]; } else { state.open[id] = true; }
+    renderFaq();
+    var again = byId('faqList').querySelector('.faq-head[data-id="' + id + '"]');
+    if (again) again.focus();
+  });
+
+  byId('clearFilters').addEventListener('click', function () {
+    state.query = '';
+    state.category = 'all';
+    byId('searchInput').value = '';
+    render();
+    byId('searchInput').focus();
+  });
+
+  byId('searchInput').addEventListener('input', function (event) {
+    state.query = event.target.value.trim().toLowerCase();
+    render();
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll('input[name="visibility"]'), function (radio) {
+    radio.addEventListener('change', updateHint);
+  });
+
+  byId('askForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+    var text = byId('askText').value.trim();
+    var confirm = byId('askConfirm');
+    if (!text) {
+      confirm.className = 'confirm confirm-warn';
+      confirm.hidden = false;
+      confirm.textContent = 'Add your question first, then send it.';
+      byId('askText').focus();
+      return;
+    }
+    var chosen = document.querySelector('input[name="visibility"]:checked');
+    var visibility = chosen ? chosen.value : 'public';
+    state.ref += 1;
+    var ref = 'Q-' + state.ref;
+    state.pending.push({
+      id: 'q' + state.ref,
+      text: text,
+      from: 'You',
+      when: 'just now',
+      visibility: visibility,
+      answer: '',
+      category: CATEGORIES[0],
+      faqId: null
+    });
+    byId('askForm').reset();
+    updateHint();
+    confirm.className = 'confirm';
+    confirm.hidden = false;
+    confirm.textContent = 'Saved as ' + ref + '. It is in the admin queue under Pending questions. ' +
+      (visibility === 'public'
+        ? 'Emma can add it to the FAQ once she has answered.'
+        : 'Only Emma can see it.') +
+      ' Nothing was sent and nothing was stored.';
+    persist();
+    render();
+  });
+
+  byId('pendingList').addEventListener('click', function (event) {
+    var btn = event.target.closest('button[data-act]');
+    if (!btn) return;
+    var act = btn.getAttribute('data-act');
+    if (act === 'answer') {
+      state.answeringId = btn.getAttribute('data-id');
+      renderPending();
+      focusFirst(byId('pendingList').querySelector('.adm-form'), 'textarea');
+    }
+    if (act === 'cancel-answer') {
+      state.answeringId = null;
+      renderPending();
+    }
+  });
+
+  byId('pendingList').addEventListener('submit', function (event) {
+    var form = event.target.closest('.adm-form');
+    if (!form) return;
+    event.preventDefault();
+    var item = state.pending.filter(function (p) { return p.id === form.getAttribute('data-id'); })[0];
+    if (!item) return;
+    var answer = form.elements.answer.value.trim();
+    if (!answer) { form.elements.answer.focus(); return; }
+    var category = form.elements.category.value;
+    item.answer = answer;
+    item.category = category;
+    if (form.elements.publish.checked) {
+      var existing = item.faqId ? findFaq(item.faqId) : null;
+      if (existing) {
+        existing.a = answer;
+        existing.category = category;
+        existing.published = true;
+      } else {
+        var newId = 'f' + Date.now().toString(36);
+        state.faq.push({ id: newId, category: category, q: item.text, a: answer, published: true });
+        item.faqId = newId;
+      }
+    }
+    state.answeringId = null;
+    persist();
+    render();
+  });
+
+  byId('adminList').addEventListener('click', function (event) {
+    var btn = event.target.closest('button[data-act]');
+    if (!btn) return;
+    var act = btn.getAttribute('data-act');
+    var id = btn.getAttribute('data-id');
+    if (act === 'edit') {
+      state.editingId = id;
+      state.confirmId = null;
+      renderAdminList();
+      focusFirst(byId('adminList').querySelector('.adm-form'), 'input[type="text"]');
+    }
+    if (act === 'cancel-edit') { state.editingId = null; renderAdminList(); }
+    if (act === 'delete') { state.confirmId = id; state.editingId = null; renderAdminList(); }
+    if (act === 'cancel-delete') { state.confirmId = null; renderAdminList(); }
+    if (act === 'confirm-delete') {
+      state.faq = state.faq.filter(function (f) { return f.id !== id; });
+      state.confirmId = null;
+      persist();
+      render();
+    }
+    if (act === 'toggle-publish') {
+      var entry = findFaq(id);
+      if (entry) {
+        entry.published = !entry.published;
+        persist();
+        render();
+      }
+    }
+  });
+
+  byId('adminList').addEventListener('submit', function (event) {
+    var form = event.target.closest('.adm-form');
+    if (!form) return;
+    event.preventDefault();
+    var entry = findFaq(form.getAttribute('data-id'));
+    if (!entry) return;
+    var question = form.elements.question.value.trim();
+    var answer = form.elements.answer.value.trim();
+    if (!question || !answer) {
+      (question ? form.elements.answer : form.elements.question).focus();
+      return;
+    }
+    entry.q = question;
+    entry.a = answer;
+    entry.category = form.elements.category.value;
+    state.editingId = null;
+    persist();
+    render();
+  });
+
+  byId('addForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+    var question = byId('addQuestion').value.trim();
+    var answer = byId('addAnswer').value.trim();
+    var error = byId('addError');
+    var ok = byId('addOk');
+    if (!question || !answer) {
+      ok.hidden = true;
+      error.textContent = 'Add both a question and an answer before saving.';
+      error.hidden = false;
+      (question ? byId('addAnswer') : byId('addQuestion')).focus();
+      return;
+    }
+    error.hidden = true;
+    state.faq.push({
+      id: 'f' + Date.now().toString(36),
+      category: byId('addCategory').value,
+      q: question,
+      a: answer,
+      published: true
+    });
+    byId('addForm').reset();
+    persist();
+    render();
+    ok.textContent = 'Entry added and published to the FAQ.';
+    ok.hidden = false;
+  });
+
+  byId('addCategory').innerHTML = categoryOptions(CATEGORIES[0]);
+  updateHint();
+  render();
+
+})();
+</script>
+</body>
+</html>
